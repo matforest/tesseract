@@ -1,7 +1,29 @@
 doctype 5
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
+| <!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+| <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+head
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width')
+  title #{title} - #{subtitle}
+  link(rel='stylesheet', href='/stylesheets/foundation/4.1.5/normalize.css')
+  link(rel='stylesheet', href='/stylesheets/foundation/4.1.5/foundation.min.css')
+  link(rel='stylesheet', href='/stylesheets/style.css')
+
+  script(type='text/javascript', src='/javascripts/vendor/custom.modernizr.js')
+  block scriptsBefore
+  
+body
+  .container
+    include nav
     block content
+  include foot
+
+  script(type='text/javascript')
+    document.write('<script src=' +
+      ('__proto__' in {} ? 'javascripts/vendor/zepto' : 'javascripts/vendor/jquery') +
+      '.js><\/script>')
+  script(type='text/javascript', src='javascripts/vendor/foundation.min.js')
+  script(type='text/javascript')
+    $(document).foundation();
+
+  block scriptsAfter

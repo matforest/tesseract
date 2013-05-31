@@ -1,6 +1,23 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  img(src="https://upload.wikimedia.org/wikipedia/commons/5/55/8-cell-simple.gif")
+  .pitch
+    .row
+      .small-12
+        h1= title
+        h3.subheader= subtitle
+  hr
+
+  .pitch
+    .row
+      .small-6.large-6.columns
+        img(src="https://upload.wikimedia.org/wikipedia/commons/5/55/8-cell-simple.gif")
+        //img(src='holder.js/400x250')
+      .small-6.large-6.columns
+        h2.subheader.teal Data.
+        p.subheader
+          | Feel the real.
+  hr
+
+block scriptsAfter
+  script(type='text/javascript', src='javascripts/vendor/holder.js')
