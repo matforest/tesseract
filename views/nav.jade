@@ -1,4 +1,41 @@
-#header
-  dl.sub-nav.right
-    dd.active
-      a(href="/") Home
+mixin link(heading)
+  - var hLow = heading.toLowerCase()
+  - var url = heading ? '/'+ hLow : '#'
+  if page == hLow
+    li.active
+      a(href="#{url}") #{heading}
+  else
+    li
+      a(href="#{url}") #{heading}
+
+.fixed
+  nav.top-bar
+    ul.title-area
+      // title area
+      li.name
+        h1
+          a(href="#") #{constants.title}
+      // Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
+      li.toggle-topbar.menu-icon
+        a(href="#")
+          span Menu
+    
+    section.top-bar-section
+      // left nav section
+      ul.left
+        li.divider
+        if page == 'home'
+          li.active
+            a(href="#") Home
+        else
+          li
+            a(href="/") Home
+        li.divider
+        +link('About')
+        li.divider
+        +link('Contact')
+        
+      
+      // right nav section
+      ul.right
+        li.divider.show-for-small

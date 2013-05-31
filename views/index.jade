@@ -1,23 +1,121 @@
 extends layout
 
+block styles
+  link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css")
+  | <!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" /><![endif]-->
+
 block content
   .pitch
     .row
       .small-12
-        h1= title
-        h3.subheader= subtitle
+        h1 #{constants.title}
+        h3.subheader #{constants.subtitle}
   hr
 
   .pitch
     .row
-      .small-6.large-6.columns
-        img(src="https://upload.wikimedia.org/wikipedia/commons/5/55/8-cell-simple.gif")
-        //img(src='holder.js/400x250')
-      .small-6.large-6.columns
-        h2.subheader.teal Data.
-        p.subheader
-          | Feel the real.
+      .small-12.large-12.columns
+        #map
+        //img(src='holder.js/480x600')
   hr
 
 block scriptsAfter
   script(type='text/javascript', src='javascripts/vendor/holder.js')
+  script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.5/leaflet.js')
+  script(type='text/javascript')
+    var map = L.map('map').setView([-34.93, 138.64], 13);
+
+    L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+      key: 'e4c1e9f583d243d2abe36c41d8ffbb93',
+        maxZoom: 18,
+      styleId: 997
+    }).addTo(map);
+
+    var marker = L.marker([-34.911555,138.644859]).addTo(map);
+    marker.bindPopup("<b>Hello world!</b><br>I am a popup.");//.openPopup();
+
+    function onMapClick(e) {
+        alert("You clicked the map at " + e.latlng);
+    }
+
+    map.on('click', onMapClick);
+
+    var popup = L.popup();
+
+    function onMapClick(e) {
+        popup
+            .setLatLng(e.latlng)
+            .setContent("You clicked the map at " + e.latlng.toString())
+            .openOn(map);
+    }
+
+    map.on('click', onMapClick);
+
+    var baseballIcon = L.icon({
+          iconUrl: 'baseball-marker.png',
+          iconSize: [32, 37],
+          iconAnchor: [16, 37],
+          popupAnchor: [0, -28]
+        });
+
+    //leaflet geojson example
+    var geoJsonFeatures = [{ 
+      "type": "Feature", 
+      "properties": { 
+        "OBJECTID": 251, 
+        "RECNO": "SA0067780", 
+        "NAME": "Glen Odmond Guide Hall", 
+        "F_CODE": "BLDG", 
+        "OTHERDETLS": "Location is approximate only", 
+        "SOURCE": "DTEI Points of Interest database", 
+        "COUNTY": "Adelaide", 
+        "LATITUDE": -34.952610, 
+        "LONGITUDE": 138.635139, 
+        "STATE": "SA", 
+        "PUBLIC_REL": "Y" },
+      "geometry": { 
+        "type": "Point", 
+        "coordinates": [ 138.636504, -34.951154 ] 
+      } 
+    }, { "type": "Feature", 
+     "properties": { 
+       "OBJECTID": 253, 
+       "RECNO": "SA0049844", 
+       "NAME": "Glenelg Community Hospital", 
+       "F_CODE": "HOSP", 
+       "OTHERDETLS": "Situated at 5 Farrell Street, Glenelg South.", 
+       "SOURCE": "City of Holdfast Bay - Local Heritage PAR Pg 5 \/ DTEI Points of Interest database \/", 
+       "CLASS": "RECD", 
+       "COUNTY": "Adelaide", 
+       "LATITUDE": -34.991384, 
+       "LONGITUDE": 138.511243, 
+       "STATE": "SA", 
+       "ALTNAME": "Glenelg District Community Hospital", 
+       "PUBLIC_REL": "Y" }, 
+     "geometry": { 
+       "type": "Point", 
+       "coordinates": [ 138.512610, -34.989930 ] 
+     } 
+    }];
+
+    //attach a popup to each feature
+    function onEachFeature(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.popupContent) {
+            layer.bindPopup(feature.properties.popupContent);
+        }
+        // use name otherwise
+        if (feature.properties && feature.properties.NAME) {
+            layer.bindPopup("<b>"+feature.properties.NAME+"</b><br>"+feature.properties.OTHERDETLS);
+        }
+    }
+
+    //add features to the map
+    var myGeoJLayer = L.geoJson(null, {
+      onEachFeature: onEachFeature/*,
+      pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: baseballIcon});
+          }*/
+    }).addTo(map);
+    myGeoJLayer.addData(geoJsonFeatures);

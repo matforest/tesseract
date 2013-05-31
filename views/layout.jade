@@ -4,18 +4,18 @@ doctype 5
 head
   meta(charset='utf-8')
   meta(name='viewport', content='width=device-width')
-  title #{title} - #{subtitle}
+  title #{constants.title} - #{constants.subtitle}
   link(rel='stylesheet', href='/stylesheets/foundation/4.1.5/normalize.css')
   link(rel='stylesheet', href='/stylesheets/foundation/4.1.5/foundation.min.css')
   link(rel='stylesheet', href='/stylesheets/style.css')
+  block styles
 
   script(type='text/javascript', src='/javascripts/vendor/custom.modernizr.js')
   block scriptsBefore
-  
+
 body
-  .container
-    include nav
-    block content
+  include nav
+  block content
   include foot
 
   script(type='text/javascript')
