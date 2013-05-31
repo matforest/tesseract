@@ -39,6 +39,39 @@ block scriptsAfter
         alert("You clicked the map at " + e.latlng);
     }
 
+    function onDragEnd(e) {
+      var bounds = map.getBounds();
+      console.log('SW: ' + bounds.getSouthWest());
+      console.log('NE: ' + bounds.getNorthEast());
+
+      $.ajax({
+        type: 'GET',
+        url: '/getpoints',
+        // data to be added to query string
+        data: { 
+          'nw': bounds.getNorthWest().toString()
+          //'ne': bounds.getNorthEast(),
+          //'sw': bounds.getSouthWest(),
+          //'se': bounds.getSouthEast()
+        },
+        // type of data we are expecting in return:
+        dataType: 'text',
+        context: $('body'),
+        success: function(data){
+          // Supposing this JSON payload was received:
+          //   {"project": {"id": 42, "html": "<div>..." }}
+          // append the HTML to context object.
+          //this.append(data.project.html)
+          console.log(data);
+          alert('received data from server');
+        },
+        error: function(xhr, type){
+          alert('Ajax error!')
+        }
+      });
+    };
+
+    map.on('dragend', onDragEnd);
     map.on('click', onMapClick);
 
     var popup = L.popup();
