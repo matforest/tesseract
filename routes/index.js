@@ -48,13 +48,13 @@ exports.getdetails = function(req, res) {
 exports.createEvent = function(req, res) {
 
     var query = {
-      lat: req.query.lat,
-      lng: req.query.lng,
-      name: req.query.name,
-      desc: req.query.desc,
-      creator: req.query.creator,
-      location_type: req.query.location_type,
-      fid: req.query.fid
+      lat: req.body.lat,
+      lng: req.body.lng,
+      name: req.body.name,
+      desc: req.body.desc,
+      creator: req.body.creator,
+      location_type: req.body.location_type,
+      fid: req.body.fid
     };
 
     console.log('createEvent called; query: ', query);
