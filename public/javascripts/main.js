@@ -81,6 +81,27 @@ var playgroundIcon = L.icon({
     popupAnchor: [0, -28]
 });
 
+var libraryIcon = L.icon({
+    iconUrl: '/images/LibraryPin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -28]
+});
+
+var schoolIcon = L.icon({
+    iconUrl: '/images/ApplePin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -28]
+});
+
+var communityEducationIcon = L.icon({
+    iconUrl: '/images/InfoPin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -28]
+});
+
 // attach a popup to each feature
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -96,10 +117,25 @@ function onEachFeature(feature, layer) {
 //add features to the map
 var myGeoJLayer = L.geoJson(null, {
     pointToLayer: function (feature, latlng) {
-        if(feature.properties.type && feature.properties.type === 'playground')
-        return L.marker(latlng, {
-            icon: playgroundIcon
-        });
+        if(feature.properties.type && feature.properties.type === 'playground') {
+            return L.marker(latlng, {
+                icon: playgroundIcon });
+        }
+        else if(feature.properties.type && feature.properties.type === 'library') {
+            return L.marker(latlng, {
+                icon: libraryIcon
+            });
+        }
+        else if(feature.properties.type && feature.properties.type === 'school') {
+            return L.marker(latlng, {
+                icon: schoolIcon
+            });
+        }
+        else if(feature.properties.type && feature.properties.type === 'adult_education') {
+            return L.marker(latlng, {
+                icon: communityEducationIcon
+            });
+        }
     },
     onEachFeature: onEachFeature
 }).addTo(map);
