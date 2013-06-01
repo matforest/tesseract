@@ -290,6 +290,11 @@ var myGeoJLayer = L.geoJson(null, {
             return L.marker(latlng, {
                 icon: eventIcon
             });
+        },
+        else if(feature.properties.type && feature.properties.type === 'report') {
+            return L.marker(latlng, {
+                icon: eventIcon
+            });
         }
         else {
             return L.marker(latlng);
