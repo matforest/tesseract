@@ -35,6 +35,7 @@ app.get('/about', routes.about);
 app.get('/contact', routes.contact);
 app.get('/getpoints', routes.getpoints);
 app.get('/getdetails', routes.getdetails);
+app.get('/findAuthority', routes.findAuthority);
 //app.get('/users', user.list);
 
 app.post('/createEvent', routes.createEvent);
