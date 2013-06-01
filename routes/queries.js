@@ -2,6 +2,7 @@ var pg = require('pg'),
   config = require('./../config');
 
 var conString = "postgres://gis:mypassword@"+config.db+":5432/gisdb";
+var defaultSchema = 'gis_schema';
 
 var typesToTables = {
   'playground' : 'playgrounds'
@@ -98,7 +99,7 @@ function getTable(type) {
   var table = typesToTables[type]; 
 
   if (table) {
-    return table;
+    return defaultSchema + '.' + table;
   } else {
     throw new Error('unknown type: ' + type);
   }
