@@ -30,7 +30,17 @@ exports.getpoints = function(req, res) {
 
   queries.findAll( [req.query.nw, req.query.ne, req.query.se, req.query.sw], function(results) {
       res.json(results);
-      res.end;
+      res.end();
   } );
 
 }
+
+exports.getdetails = function() {
+
+  queries.findById(req.query.id, req.query.type, function(results) {
+      res.json(results);
+      res.end();
+  });
+
+}
+
