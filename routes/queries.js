@@ -5,7 +5,11 @@ var conString = "postgres://gis:mypassword@"+config.db.host+":"+config.db.port+"
 var defaultSchema = 'gis_schema';
 
 var typesToTables = {
-  'playground' : 'playgrounds'
+  'playground' : 'playgrounds',
+  'adult_education' : 'ace',
+  //'local_gov' : 'lga',
+  'library' : 'libraries',
+  'school' : 'schools'
 };
 
 // Find all types of objects in the search area
@@ -21,6 +25,12 @@ exports.findAll = function(pointArr, callback) {
   }
 
   callback(results);
+}
+
+// Execute a find, expects to be already connected
+function doFind(pointArr, type, callback, client) {
+
+
 }
 
 // Find the specified type of object in the search area
@@ -91,7 +101,7 @@ exports.findById = function(id, type, callback) {
 function createGeoQuery( polygonStr, type ) {
 
   var table = getTable(type);
-  return "SELECT id, name, ST_AsGeoJSON(the_geom) as geom FROM " + table + " WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
+  return "SELECT id, name, ST_AsGeoJSON(geom) as geom FROM " + table + " WHERE ST_within(geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
 }
 
 function getTable(type) {
