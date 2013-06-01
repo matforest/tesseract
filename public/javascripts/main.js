@@ -37,7 +37,7 @@ var communityEducationIcon = L.icon({
     popupAnchor: [0, -28]
 });
 
-var newEventIcon = L.icon({
+var eventIcon = L.icon({
     iconUrl: '/images/InfoPin.png',
     iconSize: [48, 48],
     iconAnchor: [16, 48],
@@ -93,7 +93,7 @@ function onMapClick(e) {
 
     if(currentSelection && currentSelection.hasClass('create')) {
         //create a new event icon
-        marker.setIcon(newEventIcon);
+        marker.setIcon(eventIcon);
         marker.setLatLng(e.latlng).addTo(map);
 
         //populate the form with the location
@@ -133,14 +133,13 @@ function onLocationFound(e) {
     $("form input[name=lng]").val(e.latlng.lng);
 }
 
+//send a request to the server for more data when the user clicks a marker
 function onPopupOpen(e) {
     var popupContent = e.popup._content;
     if(popupContent) {
         //do something if the content has a hidden field we know about
-//console.log(popupContent);
         var idType = /__.*__/.exec(popupContent);
         if(idType && idType[0]) {
-            //console.log(idType[0]);
             idType = idType[0].replace(/__/g, '');
             var arr = idType.split(',');
             var request = {
@@ -149,7 +148,6 @@ function onPopupOpen(e) {
             };
 
             getDetails(request);
-            //console.log(request);
         }
     }
 }
@@ -181,7 +179,10 @@ function getDetailsSuccess(data) {
 
     var out = '';
     for(var key in data[0]) {
-        out += '<span>key:' + key + ' ' + data[0][key] + '</span>';
+        if(key === 'id' || key === 'geom' || key === 'fid' || data[0][key] == 'NULL') {
+            continue;
+        }
+        out += '<div class="large-6 small-12 columns"><strong style="text-transform: capitalize">' + key + '</strong>: ' + data[0][key] + '</div><br>';
     }
 
     $('#details').html(out);
@@ -238,6 +239,11 @@ var myGeoJLayer = L.geoJson(null, {
         else if(feature.properties.type && feature.properties.type === 'adult_education') {
             return L.marker(latlng, {
                 icon: communityEducationIcon
+            });
+        }
+        else if(feature.properties.type && feature.properties.type === 'event') {
+            return L.marker(latlng, {
+                icon: eventIcon
             });
         }
         else {
