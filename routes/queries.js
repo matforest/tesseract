@@ -10,7 +10,8 @@ var typesToTables = {
   //'local_gov' : 'lga',
   'library' : 'libraries',
   'school' : 'schools',
-  'event' : 'events'
+  'event' : 'events',
+  'report' : 'reports_view'
 };
 
 // Find all types of objects in the search area
