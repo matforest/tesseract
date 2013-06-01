@@ -11,9 +11,17 @@ block content
     h3(style="display: inline; padding-left: 10px").subheader #{constants.subtitle}
   hr
 
-  select#featureSearch(data-placeholder="Select desired features", multiple="multiple")
-    option(value="playground") Playground
-    option(value="library") Library
+  section#mode_section
+    #mode.row
+        .small-12.large-7.large-centered.columns
+          ul.button-group
+              li
+                  a.button.secondary(href="#") Find 
+              li
+                  a.button.secondary(href="#") Create 
+              li
+                  a.button.secondary(href="#") Reports 
+    hr
 
   section#map_section
     #map

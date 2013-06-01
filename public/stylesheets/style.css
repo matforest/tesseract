@@ -9,6 +9,10 @@ a {
   margin-top: 20px;
   height: 450px;
 }
+.button.secondary {
+  margin-bottom: 0;
+  width: 150px;
+}
 /* We use this media query to add styles to any device that supports media queries */
 @media only screen {
   body {
