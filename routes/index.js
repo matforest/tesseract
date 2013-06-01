@@ -1,4 +1,5 @@
 var queries = require('./queries'),
+    events = require('./events'),
   config = require('./../config');
 
 /*
@@ -58,7 +59,7 @@ exports.createEvent = function(req, res) {
       fid: null
     };
 
-    queries.insertEvent(query, function(results) {
+    events.insertEvent(query, function(results) {
       res.json(results);
       res.end();
   });
