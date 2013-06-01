@@ -60,13 +60,13 @@ block scriptsAfter
         dataType: 'text',
         context: $('body'),
         success: function(data){
-          console.log('success');
+          //console.log(data);
 
           data = JSON.parse(data);
 
           for(var i=0, l=data.length; i<l; i++) {
             //console.log(data[i].name);
-            myGeoJLayer.addData(data[i].wkt);
+            myGeoJLayer.addData(data[i].geom);
           }
         },
         error: function(xhr, type){
@@ -97,7 +97,7 @@ block scriptsAfter
         });
 
     //leaflet geojson example
-    var geoJsonFeatures = [{ 
+    /*var geoJsonFeatures = [{ 
       "type": "Feature", 
       "properties": { 
         "OBJECTID": 251, 
@@ -134,7 +134,7 @@ block scriptsAfter
        "type": "Point", 
        "coordinates": [ 138.512610, -34.989930 ] 
      } 
-    }];
+    }];*/
 
     //attach a popup to each feature
     function onEachFeature(feature, layer) {
@@ -155,4 +155,4 @@ block scriptsAfter
             return L.marker(latlng, {icon: baseballIcon});
           }*/
     }).addTo(map);
-    myGeoJLayer.addData(geoJsonFeatures);
+    //myGeoJLayer.addData(geoJsonFeatures);
