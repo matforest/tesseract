@@ -5,6 +5,19 @@ the_geom geometry,
 id 
 );*/
 
+-- Events
+create table if not exists gis_schema.events (
+ id serial PRIMARY KEY,
+ name varchar,
+ description varchar,
+ creator varchar,
+ location_type varchar,
+ fid integer,
+ geom geometry
+);
+
+--CREATE INDEX idx_events_geom ON gis_schema.events USING GIST(geom);
+
 -- Adult Community Education Providers table
 create table if not exists gis_schema.ace (
   id serial PRIMARY KEY,

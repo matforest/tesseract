@@ -1,4 +1,5 @@
 var map = L.map('map').setView([-34.93, 138.64], 13);
+//stores the items that have been added to the map
 var cache = [];
 
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
@@ -7,72 +8,6 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
         maxZoom: 18,
         styleId: 997
         }).addTo(map);
-
-function onMapClick(e) {
-    alert("You clicked the map at " + e.latlng);
-}
-
-function onDragEnd(e) {
-    var bounds = map.getBounds();
-
-    $.ajax({
-        type: 'GET',
-        url: '/getpoints',
-        // data to be added to query string
-        data: { 
-            'nw': bounds.getNorthWest().toString(),
-            'ne': bounds.getNorthEast().toString(),
-            'sw': bounds.getSouthWest().toString(),
-            'se': bounds.getSouthEast().toString()
-        },
-        // type of data we are expecting in return:
-        dataType: 'text',
-        context: $('body'),
-        success: function(data){
-            data = JSON.parse(data);
-            var newData = [];
-            console.log('returned ' + data.length + ' results');
-            console.log('already ' + cache.length + ' items in the cache');
-
-            for(var i=0, l=data.length; i < l; i++) {
-                var found = false;
-                for(j=0, ll=cache.length; j < ll; j++) {
-                    
-                    if(data[i].properties.id === cache[j].properties.id &&
-                        data[i].properties.type === cache[j].properties.type) {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found) {
-                    cache.push(data[i]);
-                    newData.push(data[i]);
-                }
-            }
-
-            console.log('adding ' + newData.length + ' items to the map');
-
-            myGeoJLayer.addData(newData);
-        },
-        error: function(xhr, type){
-            alert('Ajax error!')
-        }
-    });
-};
-
-map.on('dragend', onDragEnd);
-map.on('click', onMapClick);
-
-var popup = L.popup();
-
-function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
-}
-
-map.on('click', onMapClick);
 
 var playgroundIcon = L.icon({
     iconUrl: '/images/FunFairPin.png',
@@ -102,19 +37,141 @@ var communityEducationIcon = L.icon({
     popupAnchor: [0, -28]
 });
 
+var popup = L.popup();
+
+/*--------------
+  Map Events
+---------------*/
+function onDragEnd(e) {
+    var bounds = map.getBounds();
+
+    $.ajax({
+        type: 'GET',
+        url: '/getpoints',
+        // data to be added to query string
+        data: { 
+            'nw': bounds.getNorthWest().toString(),
+            'ne': bounds.getNorthEast().toString(),
+            'sw': bounds.getSouthWest().toString(),
+            'se': bounds.getSouthEast().toString()
+        },
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            getPointsSuccess(data);
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error getting data from the database.')
+        }
+    });
+};
+
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map);
+}
+
 // attach a popup to each feature
 function onEachFeature(feature, layer) {
-    // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
-    }
-    // use name otherwise
+    // display the features name on click
     if (feature.properties && feature.properties.name) {
-        layer.bindPopup("<b>"+feature.properties.name+"</b><br>"+feature.properties.type);
+        var type = feature.properties.type === 'adult_education' ? 'Adult Community Education facility' : feature.properties.type;
+        layer.bindPopup("<b>"+feature.properties.name+"</b><br>" + type +
+            "<input type='hidden' name='pid' value='__"+feature.properties.id+","+feature.properties.type+"__'/>");
     }
 }
 
-//add features to the map
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+    L.circle(e.latlng, radius).addTo(map);
+}
+
+function onPopupOpen(e) {
+    var popupContent = e.popup._content;
+    if(popupContent) {
+        //do something if the content has a hidden field we know about
+//console.log(popupContent);
+        var idType = /__.*__/.exec(popupContent);
+        if(idType && idType[0]) {
+            //console.log(idType[0]);
+            idType = idType[0].replace(/__/g, '');
+            var arr = idType.split(',');
+            var request = {
+                id: arr[0],
+                type: arr[1]
+            };
+
+            getDetails(request);
+            //console.log(request);
+        }
+    }
+}
+
+/*------------------
+  Helper Functions
+-------------------*/
+function getDetails(request) {
+    $.ajax({
+        type: 'GET',
+        url: '/getdetails',
+        // data to be added to query string
+        data: request,
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            getDetailsSuccess(data);
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error getting data from the database.')
+        }
+    });
+}
+
+function getDetailsSuccess(data) {
+    console.log('get details succeeded');
+    console.log(data);
+}
+
+function getPointsSuccess(data) {
+    //data = JSON.parse(data);
+    var newData = [];
+    console.log('returned ' + data.length + ' results');
+    console.log('already ' + cache.length + ' items in the cache');
+
+    for(var i=0, l=data.length; i < l; i++) {
+        var found = false;
+        for(j=0, ll=cache.length; j < ll; j++) {
+            
+            if(data[i].properties.id === cache[j].properties.id &&
+                data[i].properties.type === cache[j].properties.type) {
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            cache.push(data[i]);
+            newData.push(data[i]);
+        }
+    }
+
+    console.log('adding ' + newData.length + ' items to the map');
+
+    myGeoJLayer.addData(newData);
+}
+
+/*---------------------
+  Initialisation stuff
+----------------------*/
+
+// add features to the map
 var myGeoJLayer = L.geoJson(null, {
     pointToLayer: function (feature, latlng) {
         if(feature.properties.type && feature.properties.type === 'playground') {
@@ -136,19 +193,20 @@ var myGeoJLayer = L.geoJson(null, {
                 icon: communityEducationIcon
             });
         }
+        else {
+            return L.marker(latlng);
+        }
     },
     onEachFeature: onEachFeature
 }).addTo(map);
 
-function onLocationFound(e) {
-    var radius = e.accuracy / 2;
-
-    L.marker(e.latlng).addTo(map)
-        .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-    L.circle(e.latlng, radius).addTo(map);
-}
-
 map.on('locationfound', onLocationFound);
+map.on('dragend', onDragEnd);
+map.on('click', onMapClick);
+map.on('popupopen', onPopupOpen);
 
-map.locate({setView: true, maxZoom: 16});
+// trigger location search
+map.locate({
+    setView: true, 
+    maxZoom: 15
+});
