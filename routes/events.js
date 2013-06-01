@@ -6,7 +6,7 @@ exports.insertEvent = function(eventDetails, callback) {
   var point = createWKTPoint(eventDetails.lat, eventDetails.lng);
 
   var table = config.defaultSchema + '.events';
-  var sql = 'insert into '+table+' (name, description, creator, location_type, fid, geom) values ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))';
+  var sql = 'insert into ' + table + ' (name, description, creator, location_type, fid, geom) values ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))';
 
   var client = new pg.Client(conString);
   client.connect();

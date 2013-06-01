@@ -3,7 +3,6 @@ config = require('./../config');
 var async = require('async');
 
 var conString = "postgres://gis:mypassword@"+config.db.host+":"+config.db.port+"/gisdb";
-var defaultSchema = 'gis_schema';
 
 var typesToTables = {
   'playground' : 'playgrounds',
@@ -120,7 +119,7 @@ function getTable(type) {
   var table = typesToTables[type]; 
 
   if (table) {
-    return defaultSchema + '.' + table;
+    return config.defaultSchema + '.' + table;
   } else {
     throw new Error('unknown type: ' + type);
   }
@@ -154,41 +153,6 @@ function cleanPoint( pointString ) {
     var lat = pointString.match(regEx)[1];
     var long = pointString.match(regEx)[2];
     return long + ' ' + lat;
-}
-
-exports.insertEvent = function(eventDetails, callback) {
-
-  var point = createWKTPoint(eventDetails.lat, eventDetails.lng);
-
-  var table = defaultSchema + '.events';
-  var sql = 'insert into '+table+' (name, description, creator, location_type, fid, geom) values ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))';
-
-  var client = new pg.Client(conString);
-  client.connect();
-
-  var results = [];
-
-  var params = [eventDetails.name, eventDetails.desc, eventDetails.creator, eventDetails.location_type, eventDetails.fid, point];
-
-  var query = client.query(sql, params);
-
-  query.on('row', function(row) {
-    console.log(row);
-  });
-
-  query.on('error', function(err) {
-    console.log('Error: ', err);
-  });
-  
-  query.on('end', function() { 
-    client.end();
-    callback(results);
-  });   
-}
-
-function createWKTPoint(lat, lng) {
-
-  return 'POINT('+lng+' '+lat+')';
 }
 
 // Returns a GeoJSON feature for the given postgres row
