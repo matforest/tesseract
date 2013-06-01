@@ -40,7 +40,7 @@ exports.find = function(pointArr, type, callback) {
     results.push({
       id: row.gid,
       name: row.name,
-      geom: row.geom, 
+      geom: JSON.parse(row.geom), 
       type: type
     });
   });
