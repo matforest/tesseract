@@ -54,7 +54,7 @@ function doFind(pointArr, type, callback) {
   var poly = createPolygon(pointArr);
   var sql = createGeoQuery(poly, type);
   
-  console.log('SQL: ' + sql);
+  // console.log('SQL: ' + sql);
 
   var query = client.query(sql);
 
@@ -87,7 +87,7 @@ exports.findById = function(id, type, callback) {
   var client = new pg.Client(conString);
   client.connect();
 
-  console.log('findById: ' + sql);
+  // console.log('findById: ' + sql);
 
   var query = client.query(sql, [id]);
 
