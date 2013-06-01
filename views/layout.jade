@@ -18,10 +18,7 @@ body
   block content
   include foot
 
-  script(type='text/javascript')
-    document.write('<script src=' +
-      ('__proto__' in {} ? 'javascripts/vendor/zepto' : 'javascripts/vendor/jquery') +
-      '.js><\/script>')
+  script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js')
   script(type='text/javascript', src='javascripts/vendor/foundation.min.js')
   script(type='text/javascript')
     $(document).foundation();

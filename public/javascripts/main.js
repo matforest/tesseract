@@ -1,4 +1,5 @@
 var map = L.map('map').setView([-34.93, 138.64], 13);
+var cache = [];
 
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
@@ -28,11 +29,30 @@ function onDragEnd(e) {
         dataType: 'text',
         context: $('body'),
         success: function(data){
-            console.log('returned ' + data.length + ' results');
-
             data = JSON.parse(data);
+            var newData = [];
+            console.log('returned ' + data.length + ' results');
+            console.log('already ' + cache.length + ' items in the cache');
 
-            myGeoJLayer.addData(data);
+            for(var i=0, l=data.length; i < l; i++) {
+                var found = false;
+                for(j=0, ll=cache.length; j < ll; j++) {
+                    
+                    if(data[i].properties.id === cache[j].properties.id &&
+                        data[i].properties.type === cache[j].properties.type) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    cache.push(data[i]);
+                    newData.push(data[i]);
+                }
+            }
+
+            console.log('adding ' + newData.length + ' items to the map');
+
+            myGeoJLayer.addData(newData);
         },
         error: function(xhr, type){
             alert('Ajax error!')
@@ -54,10 +74,10 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
-var baseballIcon = L.icon({
-    iconUrl: 'baseball-marker.png',
-    iconSize: [32, 37],
-    iconAnchor: [16, 37],
+var playgroundIcon = L.icon({
+    iconUrl: '/images/FunFairPin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
     popupAnchor: [0, -28]
 });
 
@@ -69,11 +89,17 @@ function onEachFeature(feature, layer) {
     }
     // use name otherwise
     if (feature.properties && feature.properties.name) {
-        layer.bindPopup("<b>"+feature.properties.name+"</b><br>"+feature.properties.id);
+        layer.bindPopup("<b>"+feature.properties.name+"</b><br>"+feature.properties.type);
     }
 }
 
 //add features to the map
 var myGeoJLayer = L.geoJson(null, {
+    pointToLayer: function (feature, latlng) {
+        if(feature.properties.type && feature.properties.type === 'playground')
+        return L.marker(latlng, {
+            icon: playgroundIcon
+        });
+    },
     onEachFeature: onEachFeature
 }).addTo(map);
