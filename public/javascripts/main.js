@@ -137,7 +137,14 @@ function getDetails(request) {
 
 function getDetailsSuccess(data) {
     console.log('get details succeeded');
-    console.log(data);
+    console.log(data[0]);
+
+    var out = '';
+    for(var key in data[0]) {
+        out += '<span>key:' + key + ' ' + data[0][key] + '</span>';
+    }
+
+    $('#details').html(out);
 }
 
 function getPointsSuccess(data) {
