@@ -35,9 +35,19 @@ exports.getpoints = function(req, res) {
 
   console.log( 'Query: ' + query );
 
-  res.json({
-    text: 'success'
-  });
+  var rows = []; //result data from postgres
+  var results = []; //store for the json
+
+  /*for(var i=0, l = rows.length; i < l; i++) {
+    results.push({
+      id: rows[i].id,
+      name: rows[i].name,
+      lat: rows[i].latitude,
+      lng: rows[i].longitude
+    });
+  }*/
+
+  res.json(results);
   res.end;
 }
 
