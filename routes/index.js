@@ -43,13 +43,11 @@ exports.getpoints = function(req, res) {
 
 function createGeoQuery( polygonStr ) {
 
-  return "SELECT count(*) FROM playgrounds WHERE ST_within(the_geom, GeomFromEWKT('SRID=4326;" + polygonStr + "') );";
+  return "SELECT count(*) FROM playgrounds WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
 }
 
 
 function createPolygon(points) {
-
-    var regEx = /,/;
 
     var poly = 'POLYGON((';
 
@@ -69,10 +67,12 @@ function createPolygon(points) {
 }
 
 function cleanPoint( pointString ) {
+  // Clean up the incoming string, 'LatLng(-34.87692, 138.43632)' and flip the lat+long
 
-    var regEx = /LatLng\(([^)]+)\)/;
-    var point = pointString.match(regEx)[1]; // Strip garbage
-    return point.replace(/,/, ''); // Clear commas
+    var regEx = /LatLng\((.+), (.+)\)/;
+    var lat = pointString.match(regEx)[1];
+    var long = pointString.match(regEx)[2];
+    return long + ' ' + lat;
 }
 
 
