@@ -16,6 +16,19 @@ create table if not exists gis_schema.events (
  geom geometry
 );
 
+-- Reports (Faults)
+create table if not exists gis_schema.reports (
+ id serial PRIMARY KEY,
+ type varchar,
+ description varchar,
+ creator_email varchar,
+ creator_name varchar,
+ notify_creator boolean,
+ reported_on timestamp,
+ geom geometry,
+ fid integer
+);
+
 --CREATE INDEX idx_events_geom ON gis_schema.events USING GIST(geom);
 
 -- Adult Community Education Providers table
