@@ -47,17 +47,17 @@ exports.getdetails = function(req, res) {
 
 exports.createEvent = function(req, res) {
 
-    console.log('createEvent called');
-
     var query = {
-      lat: '-34.92542',
-      lng: '138.59367',
-      name: 'test',
-      desc: 'a test event, it\'s gonna be great',
-      creator: 'Mat',
-      location_type: 'custom',
-      fid: null
+      lat: req.query.lat,
+      lng: req.query.lng,
+      name: req.query.name,
+      desc: req.query.desc,
+      creator: req.query.creator,
+      location_type: req.query.location_type,
+      fid: req.query.fid
     };
+
+    console.log('createEvent called; query: ', query);
 
     events.insertEvent(query, function(results) {
       res.json(results);
