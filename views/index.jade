@@ -40,8 +40,8 @@ block content
                   textarea(name="desc", required="required", rows="3")
               .row
                 .large-4.columns
-                  label(for='name') Your Name:
-                  input(type='text', name='name')
+                  label(for='creator') Your Name:
+                  input(type='text', name='creator')
               .row
                 .large-3.columns
                   input(type="hidden", name="lat", value="-34.5")
@@ -56,13 +56,13 @@ block content
         .content(data-section-content)
           h4.subheader Submit a Fault Report to the Council
           #form-report
-            form(method="POST", action="/submitfault")
+            form(method="POST", action="/createreport")
               .row
                 .large-5.columns
                   label(for="faulttype") Fault Type:
                   select(name='faulttype')
                     option(value='street sign') Street Sign
-                    option(value='street sign') Graffiti
+                    option(value='graffiti') Graffiti
               .row
                 .large-10.small-12.columns
                   label(for="desc") Fault Description:

@@ -78,27 +78,17 @@ exports.findAuthority = function(req, res) {
 
 exports.createReport = function(req, res) {
 
-    // var query = {
-    //   type: req.body.faulttype,
-    //   desc: req.body.desc,
-    //   creator_email: req.body.email,
-    //   creator_name: req.body.name,
-    //   notify_creator: req.body.notify,
-    //   fid: req.body.fid,
-    //   lat: req.body.lat,
-    //   lng: req.body.lng
-    // };
     var query = {
-      type: 'req.body.faulttype',
-      desc: 'req.body.desc',
-      creator_email: 'req.body.email',
-      creator_name: 'req.body.name',
-      notify_creator: true,
-      fid: 1,
-      lat: '-34.93436',
-      lng: '138.61515'
+      type: req.body.faulttype,
+      desc: req.body.desc,
+      creator_email: req.body.email,
+      creator_name: req.body.name,
+      notify_creator: req.body.notify,
+      fid: req.body.fid,
+      lat: req.body.lat,
+      lng: req.body.lng
     };
-
+    
     console.log('createReport called; query: ', query);
 
     reports.insertReport(query, function(results) {
