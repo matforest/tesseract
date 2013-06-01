@@ -1,12 +1,12 @@
 
 -- Master table
-create table master (
+create table if not exists master (
 the_geom geometry,
 id 
 );
 
 -- Adult Community Education Providers table
-create table ace (
+create table if not exists ace (
   provider_name varchar,
   region varchar,
   phone varchar,
