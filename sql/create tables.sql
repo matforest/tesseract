@@ -17,7 +17,7 @@ create table if not exists gis_schema.ace (
   longitude double precision
 );
 
---COPY gis_schema.ace FROM '/path/to/csv/dfeest-listed-adult-community-education-providers-2012-13.csv' DELIMITER ',' CSV;
+--COPY gis_schema.ace(provider_name, region, phone, email, contact, address, latitude, longitude) FROM '/path/to/csv/dfeest-listed-adult-community-education-providers-2012-13.csv' DELIMITER ',' CSV;
 
 /*alter table gis_schema.ace
   add column geometry geometry(POINT, 4326);
