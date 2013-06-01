@@ -1,6 +1,6 @@
 var pg = require('pg');
 
-var conString = "postgres://gis:mypassword@192.168.128.61:5432/tesseract2";
+var conString = "postgres://gis:mypassword@localhost:5432/gisdb";
 
 var typesToTables = {
   'playground' : 'playgrounds'
@@ -38,7 +38,7 @@ exports.find = function(pointArr, type, callback) {
 
   query.on('row', function(row) {
     results.push({
-      id: row.gid,
+      id: row.id,
       name: row.name,
       geom: JSON.parse(row.geom), 
       type: type
@@ -60,8 +60,7 @@ exports.find = function(pointArr, type, callback) {
 exports.findById = function(id, type, callback) {
 
   var table = getTable(type);
-  // FIXME FIXME FIXME FIXME FIXME change id to gid
-  var sql = 'select * from ' + table + ' where gid = $1';
+  var sql = 'select * from ' + table + ' where id = $1';
 
   var client = new pg.Client(conString);
   client.connect();
@@ -90,7 +89,7 @@ exports.findById = function(id, type, callback) {
 function createGeoQuery( polygonStr, type ) {
 
   var table = getTable(type);
-  return "SELECT gid, name, ST_AsGeoJSON(the_geom) as geom FROM " + table + " WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
+  return "SELECT id, name, ST_AsGeoJSON(the_geom) as geom FROM " + table + " WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
 }
 
 function getTable(type) {
