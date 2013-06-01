@@ -28,7 +28,7 @@ exports.contact = function(req, res) {
 exports.getpoints = function(req, res) {
   console.log('received request at getpoints');
 
-  queries.find( [req.query.nw, req.query.ne, req.query.se, req.query.sw], 'playground', function(results) {
+  queries.findAll( [req.query.nw, req.query.ne, req.query.se, req.query.sw], function(results) {
       res.json(results);
       res.end;
   } );

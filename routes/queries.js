@@ -1,5 +1,6 @@
 var pg = require('pg'),
-  config = require('./../config');
+config = require('./../config');
+var async = require('async');
 
 var conString = "postgres://gis:mypassword@"+config.db.host+":"+config.db.port+"/gisdb";
 var defaultSchema = 'gis_schema';
@@ -15,27 +16,36 @@ var typesToTables = {
 // Find all types of objects in the search area
 exports.findAll = function(pointArr, callback) {
   
-  var results = []; 
-
-  // FIXME conection is closed and reopened for each type
+  var types = [];
   for (var type in typesToTables) {
-    find(pointArr, type, function(resultsInner) {
-      results.push.apply(resultsInner);
+    types.push(type);
+  }
+
+  var exec = function(item, seqCallback) {
+    doFind(pointArr, item, function(results) { // doFind callbacl
+      seqCallback(null, results); // async's callback
     });
   }
 
-  callback(results);
+  async.map(types, exec, function(err, asyncResults) {
+
+    // console.log('asyncResults: ', asyncResults);
+
+    var results = [];
+
+    // asyncResults is an array of arrays
+    for (var i = 0; i < asyncResults.length; ++i) {
+      var arr = asyncResults[i];
+      results = results.concat(arr);
+    }
+
+    callback(results);
+  });
 }
 
 // Execute a find, expects to be already connected
-function doFind(pointArr, type, callback, client) {
+function doFind(pointArr, type, callback) {
 
-
-}
-
-// Find the specified type of object in the search area
-exports.find = function(pointArr, type, callback) {
-  console.log(conString);
   var client = new pg.Client(conString);
   client.connect();
 
@@ -43,9 +53,9 @@ exports.find = function(pointArr, type, callback) {
 
   var poly = createPolygon(pointArr);
   var sql = createGeoQuery(poly, type);
-
-  //console.log('sql='+sql);
   
+  console.log('SQL: ' + sql);
+
   var query = client.query(sql);
 
   query.on('row', function(row) {
@@ -62,10 +72,15 @@ exports.find = function(pointArr, type, callback) {
   });
   
   query.on('end', function() { 
-    //console.log('results: ', results);
+    // console.log('results: ', results);
     client.end();
     callback(results);
   });    
+}
+
+// Find the specified type of object in the search area
+exports.find = function(pointArr, type, callback) {
+  doFind(pointArr, type, callback);
 }
 
 // Find a single object of some type
