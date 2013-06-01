@@ -2,7 +2,7 @@ var pg = require('pg'),
 config = require('./../config');
 var async = require('async');
 
-var conString = "postgres://gis:mypassword@"+config.db.host+":"+config.db.port+"/gisdb";
+var conString = config.conString;
 
 var typesToTables = {
   'playground' : 'playgrounds',
