@@ -75,3 +75,24 @@ exports.findAuthority = function(req, res) {
 }
 
 
+exports.createReport = function(req, res) {
+
+    var query = {
+      type: req.body.type,
+      description: req.body.description,
+      creator_email: req.body.creator_email,
+      creator_name: req.body.creator_name,
+      notify_creator: req.body.notify_creator,
+      reported_on: req.body.reported_on,
+      fid: req.body.fid,
+      lat: req.body.lat
+    };
+
+    console.log('createEvent called; query: ', query);
+
+    events.insertEvent(query, function(results) {
+      res.json(results);
+      res.end();
+  });
+
+}
