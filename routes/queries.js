@@ -56,13 +56,49 @@ exports.find = function(pointArr, type, callback) {
   });    
 }
 
+// Find a single object of some type
+exports.findById = function(id, type, callback) {
+
+  var table = getTable(type);
+  // FIXME FIXME FIXME FIXME FIXME change id to gid
+  var sql = 'select * from ' + table + ' where gid = $1';
+
+  var client = new pg.Client(conString);
+  client.connect();
+
+  console.log('findById: ' + sql);
+
+  var query = client.query(sql, [id]);
+
+  var results = [];
+
+  query.on('row', function(row) {
+    results.push( JSON.parse(JSON.stringify(row)));
+  });
+
+  query.on('error', function(err) {
+    console.log('Error: ', err);
+  });
+  
+  query.on('end', function() { 
+    client.end();
+    callback(results);
+  });    
+}
+
 
 function createGeoQuery( polygonStr, type ) {
 
-  var table = typesToTables[type];
+  var table = getTable(type);
+  return "SELECT gid, name, ST_AsGeoJSON(the_geom) as geom FROM " + table + " WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
+}
+
+function getTable(type) {
+
+  var table = typesToTables[type]; 
 
   if (table) {
-    return "SELECT gid, name, ST_AsGeoJSON(the_geom) as geom FROM " + table + " WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
+    return table;
   } else {
     throw new Error('unknown type: ' + type);
   }
@@ -97,3 +133,7 @@ function cleanPoint( pointString ) {
     var long = pointString.match(regEx)[2];
     return long + ' ' + lat;
 }
+
+
+
+
