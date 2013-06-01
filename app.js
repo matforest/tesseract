@@ -34,6 +34,7 @@ app.get('/', routes.index);
 app.get('/about', routes.about);
 app.get('/contact', routes.contact);
 app.get('/getpoints', routes.getpoints);
+app.get('/getdetails', routes.getdetails);
 //app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){

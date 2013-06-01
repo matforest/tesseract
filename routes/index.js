@@ -35,7 +35,7 @@ exports.getpoints = function(req, res) {
 
 }
 
-exports.getdetails = function() {
+exports.getdetails = function(req, res) {
 
   queries.findById(req.query.id, req.query.type, function(results) {
       res.json(results);
