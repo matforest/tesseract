@@ -3,7 +3,6 @@ extends layout
 block styles
   link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css")
   | <!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" /><![endif]-->
-  link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/chosen/0.9.14/chosen.css")
 
 block content
   .text-center
@@ -13,21 +12,51 @@ block content
 
   section#mode_section
     #mode.section-container.vertical-tabs(data-section="vertical-tabs")
-      section
+      section.find
         p.title(data-section-title)
           a Find
         .content(data-section-content)
           p Content for find
-      section
+      section.create
         p.title(data-section-title)
           a Create
         .content(data-section-content)
-          p Content for create
-      section
+          p content for create event
+          #form-create
+            form(method="POST", action="/createevent")
+              .row
+                .large-4.columns
+                  label(for="Name") Event Name:
+                  input(type="text", name="name", required="required")
+              .row
+                .large-4.columns
+                  label(for="desc") Event Description:
+                  input(type="text", name="desc", required="required")
+              .row
+                .large-3.columns
+                  input(type="hidden", name="lat", value="-34.5")
+                  input(type="hidden", name="lng", value="138.5")
+                  input(type="hidden", name="creator", value="joe.b@example.com")
+                  input(type="hidden", name="location_type", value="custom")
+                  input(type="hidden", name="fid", value="-1")
+                  input(type="submit", value="Create Event")
+      section.report
         p.title(data-section-title)
           a Report
         .content(data-section-content)
-          p Content for report
+          p content for report
+          #form-report
+            form(method="POST", action="/submitfault")
+              .row
+                .large-4.columns
+                  label(for="Name") Event Name:
+                  input(type="text", name="name", required="required")
+              .row
+                .large-3.columns
+                  input(type="hidden", name="lat", value="-34.5")
+                  input(type="hidden", name="lng", value="138.5")
+                  input(type="submit", value="Submit Fault")
+
     hr
 
   section#map_section
@@ -37,31 +66,8 @@ block content
   section#details_section
     h3 Details
     #details
-    #form
-      form(method="POST", action="/createevent")
-        .row
-          .large-4.columns
-            label(for="Name") Event Name:
-            input(type="text", name="name", required="required")
-            label(for="desc") Event Description:
-            input(type="text", name="desc", required="required")
-            //label(for="start") Start Time:
-            //input(type="text", name="start", required="required")
-            //label(for="end") End Time:
-            //input(type="text", name="end", required="required")
-        .row
-          .large-3.columns
-            input(type="hidden", name="lat", value="-34.5")
-            input(type="hidden", name="lng", value="138.5")
-            input(type="hidden", name="creator", value="joe.b@example.com")
-            input(type="hidden", name="location_type", value="custom")
-            input(type="hidden", name="fid", value="-1")
-            input(type="submit", value="Create Event")
     hr
 
 block scriptsAfter
   script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.5/leaflet.js')
   script(type='text/javascript', src='javascripts/main.js')
-  script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/chosen/0.9.14/chosen.jquery.min.js')
-  script
-    $("#featureSearch").chosen();
