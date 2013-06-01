@@ -172,7 +172,9 @@ function createFeature(row, type) {
 exports.findLocalGov = function(lat, lng, callback){
 
   var pointString = createWKTPoint(lat, lng);
-  var sql = "SELECT * FROM " + config.defaultSchema + ".lga WHERE ST_within(ST_SetSRID(ST_GeomFromText($1), 4326), geom);";
+  var sql = "SELECT id, objectid, lgatype, abbname, lga, ST_AsGeoJSON(geom) as geom" + 
+              " FROM " + config.defaultSchema + ".lga " + 
+              " WHERE ST_within(ST_SetSRID(ST_GeomFromText($1), 4326), geom);";
 
   var client = new pg.Client(conString);
   client.connect();
@@ -182,7 +184,7 @@ exports.findLocalGov = function(lat, lng, callback){
   var results = [];
 
   query.on('row', function(row) {
-    results.push( JSON.parse(JSON.stringify(row)));
+    results.push( JSON.parse(JSON.stringify(row) )); 
   });
 
   query.on('error', function(err) {
