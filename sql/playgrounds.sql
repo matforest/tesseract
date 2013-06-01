@@ -159,3 +159,6 @@ COMMIT
 -- fix up column names
 alter table gis_schema.playgrounds drop column id restrict;
 alter table gis_schema.playgrounds rename column gid to id;
+alter table gis_schema.playgrounds rename column the_geom to geom;
+
+CREATE INDEX idx_playgrounds_geom ON gis_schema.playgrounds USING GIST(geom);

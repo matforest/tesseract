@@ -59,12 +59,7 @@ function doFind(pointArr, type, callback) {
   var query = client.query(sql);
 
   query.on('row', function(row) {
-    results.push({
-      id: row.id,
-      name: row.name,
-      geom: JSON.parse(row.geom), 
-      type: type
-    });
+    results.push(createFeature(row, type));
   });
 
   query.on('error', function(err) {
@@ -161,5 +156,15 @@ function cleanPoint( pointString ) {
 }
 
 
-
-
+// Returns a GeoJSON feature for the given postgres row
+function createFeature(row, type) {
+  return { 
+    "type": "Feature", 
+    "properties": {
+      id: row.id,
+      name: row.name,
+      type: type
+    },
+    "geometry": JSON.parse(row.geom)
+  };
+}
