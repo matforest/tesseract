@@ -3,6 +3,8 @@ extends layout
 block styles
   link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css")
   | <!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" /><![endif]-->
+  link(rel="stylesheet", href="/stylesheets/datepicker/default.css")
+  link(rel="stylesheet", href="/stylesheets/datepicker/default.date.css")
 
 block content
   .text-center
@@ -25,9 +27,13 @@ block content
           #form-create
             form(method="POST", action="/createevent")
               .row
-                .large-4.columns
+                .large-5.columns
                   label(for="Name") Event Name:
                   input(type="text", name="name", required="required")
+                .large-3.columns
+                  label(for='Date') Event Date:
+                  input.datepicker(type="text", name="date", required="required")
+                .large-4.columns
               .row
                 .large-10.columns
                   label(for="desc") Event Description:
@@ -74,7 +80,7 @@ block content
               .row
                 .large-6.columns
                   label(for='lga') Submitting to:
-                  input(type='text', disabled='disabled', value='Burnside city council (based on current location)')
+                  input(type='text', name='submitto', disabled='disabled')
               .row
                 .large-3.columns
                   input(type="hidden", name="lat", value="-34.5")
@@ -96,4 +102,6 @@ block content
 
 block scriptsAfter
   script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.5/leaflet.js')
+  script(type='text/javascript', src='javascripts/vendor/picker.js', defer='defer')
+  script(type='text/javascript', src='javascripts/vendor/picker.date.js', defer='defer')
   script(type='text/javascript', src='javascripts/main.js')
