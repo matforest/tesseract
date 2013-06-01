@@ -23,4 +23,6 @@ create table if not exists gis_schema.ace (
   add column geometry geometry(POINT, 4326);
 
 UPDATE gis_schema.ace 
-  SET geometry = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);*/
+  SET geometry = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
+
+CREATE INDEX idx_ace_geom ON gis_schema.ace USING GIST(geom);*/
