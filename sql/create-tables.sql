@@ -19,7 +19,7 @@ create table if not exists gis_schema.ace (
   geom geometry
 );
 
---\copy gis_schema.ace(provider_name, region, phone, email, contact, address, latitude, longitude) FROM '/path/to/csv/dfeest-listed-adult-community-education-providers-2012-13.csv' DELIMITER ',' CSV;
+--\copy gis_schema.ace(provider_name, region, phone, email, contact, address, latitude, longitude) FROM '/home/ubuntu/tesseract/data/dfeest-listed-adult-community-education-providers-2012-13.csv' DELIMITER ',' CSV;
 
 /*
 UPDATE gis_schema.ace 
