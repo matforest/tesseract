@@ -8,4 +8,6 @@ config.db = {};
 config.db.host = process.env.NODE_ENV ? '127.0.0.1' : 'localhost';
 config.db.port = process.env.NODE_ENV ? 5432 : 3333;
 
+config.defaultSchema = 'gis_schema';
+
 module.exports = config;
