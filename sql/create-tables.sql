@@ -8,7 +8,7 @@ id
 -- Adult Community Education Providers table
 create table if not exists gis_schema.ace (
   id serial PRIMARY KEY,
-  provider_name varchar,
+  name varchar,
   region varchar,
   phone varchar,
   email varchar,

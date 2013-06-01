@@ -60,7 +60,7 @@ block scriptsAfter
         dataType: 'text',
         context: $('body'),
         success: function(data){
-          //console.log(data);
+          console.log('returned ' + data.length + ' results');
 
           data = JSON.parse(data);
 
