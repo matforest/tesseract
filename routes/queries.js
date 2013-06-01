@@ -1,7 +1,7 @@
 var pg = require('pg'),
   config = require('./../config');
 
-var conString = "postgres://gis:mypassword@"+config.db+":5432/gisdb";
+var conString = "postgres://gis:mypassword@"+config.db.host+":"+config.db.port+"/gisdb";
 var defaultSchema = 'gis_schema';
 
 var typesToTables = {
