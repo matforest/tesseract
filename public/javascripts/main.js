@@ -31,13 +31,28 @@ var schoolIcon = L.icon({
 });
 
 var communityEducationIcon = L.icon({
+    iconUrl: '/images/UniversityPin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -28]
+});
+
+var newEventIcon = L.icon({
     iconUrl: '/images/InfoPin.png',
     iconSize: [48, 48],
     iconAnchor: [16, 48],
     popupAnchor: [0, -28]
 });
 
+var faultReportIcon = L.icon({
+    iconUrl: '/images/RepairPin.png',
+    iconSize: [48, 48],
+    iconAnchor: [16, 48],
+    popupAnchor: [0, -28]
+});
+
 var popup = L.popup();
+var marker = L.marker();
 
 /*--------------
   Map Events
@@ -68,10 +83,31 @@ function onDragEnd(e) {
 };
 
 function onMapClick(e) {
-    popup
+    /*popup
         .setLatLng(e.latlng)
         .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
+        .openOn(map);*/
+
+    //detect the current section
+    var currentSelection = $('#mode section.active');
+
+    if(currentSelection && currentSelection.hasClass('create')) {
+        //create a new event icon
+        marker.setIcon(newEventIcon);
+        marker.setLatLng(e.latlng).addTo(map);
+
+        //populate the form with the location
+        $("#form-create input[name=lat]").val(e.latlng.lat);
+        $("#form-create input[name=lng]").val(e.latlng.lng);
+    } else if(currentSelection && currentSelection.hasClass('report')) {
+        //report a new fault icon
+        marker.setIcon(faultReportIcon);
+        marker.setLatLng(e.latlng).addTo(map);
+
+        //populate the form with the location
+        $("#form-report input[name=lat]").val(e.latlng.lat);
+        $("#form-report input[name=lng]").val(e.latlng.lng);
+    } 
 }
 
 // attach a popup to each feature
@@ -91,6 +127,10 @@ function onLocationFound(e) {
         .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
     L.circle(e.latlng, radius).addTo(map);
+
+    //populate the form with the location
+    $("form input[name=lat]").val(e.latlng.lat);
+    $("form input[name=lng]").val(e.latlng.lng);
 }
 
 function onPopupOpen(e) {
