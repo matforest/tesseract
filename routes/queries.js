@@ -104,7 +104,7 @@ exports.findById = function(id, type, callback) {
   query.on('end', function() { 
     client.end();
     callback(results);
-  });    
+  });
 }
 
 
@@ -166,4 +166,41 @@ function createFeature(row, type) {
     },
     "geometry": JSON.parse(row.geom)
   };
+}
+
+
+exports.findLocalGov = function(lat, lng, callback){
+
+  var pointString = createWKTPoint(lat, lng);
+  var sql = "SELECT * FROM " + config.defaultSchema + ".lga WHERE ST_within(ST_SetSRID(ST_GeomFromText($1), 4326), geom);";
+
+  var client = new pg.Client(conString);
+  client.connect();
+
+  var query = client.query(sql, [pointString]);
+
+  var results = [];
+
+  query.on('row', function(row) {
+    results.push( JSON.parse(JSON.stringify(row)));
+  });
+
+  query.on('error', function(err) {
+    console.log('Error: ', err);
+  });
+  
+  query.on('end', function() { 
+    client.end();
+    callback(results);
+  });
+}
+
+// Duplicated in events.js
+function createWKTPoint(lat, lng) {
+
+  if (lat == undefined || lng == undefined) {
+    throw new Error('bad coords, lat=' + lat + ', lng=' + lng);
+  }
+
+  return 'POINT(' + lng + ' ' + lat + ')';
 }

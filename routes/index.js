@@ -65,3 +65,13 @@ exports.createEvent = function(req, res) {
   });
 
 }
+
+exports.findAuthority = function(req, res) {
+
+    queries.findLocalGov(req.query.lat, req.query.lng, function(results) {
+      res.json(results);
+      res.end();
+    });
+}
+
+
