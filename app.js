@@ -35,7 +35,6 @@ app.get('/about', routes.about);
 app.get('/contact', routes.contact);
 app.get('/getpoints', routes.getpoints);
 app.get('/getdetails', routes.getdetails);
-app.get('/createEvent', routes.createEvent); // TODO change to post
 //app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
