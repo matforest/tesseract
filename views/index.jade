@@ -12,15 +12,22 @@ block content
   hr
 
   section#mode_section
-    #mode.row
-        .small-12.large-7.large-centered.columns
-          ul.button-group
-              li
-                  a.button.secondary(href="#") Find 
-              li
-                  a.button.secondary(href="#") Create 
-              li
-                  a.button.secondary(href="#") Reports 
+    #mode.section-container.vertical-tabs(data-section="vertical-tabs")
+      section
+        p.title(data-section-title)
+          a Find
+        .content(data-section-content)
+          p Content for find
+      section
+        p.title(data-section-title)
+          a Create
+        .content(data-section-content)
+          p Content for create
+      section
+        p.title(data-section-title)
+          a Report
+        .content(data-section-content)
+          p Content for report
     hr
 
   section#map_section
