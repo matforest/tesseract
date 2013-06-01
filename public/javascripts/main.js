@@ -107,6 +107,9 @@ function onMapClick(e) {
         //populate the form with the location
         $("#form-report input[name=lat]").val(e.latlng.lat);
         $("#form-report input[name=lng]").val(e.latlng.lng);
+
+        //populate the authority
+        findAuthority();
     } 
 }
 
@@ -131,6 +134,9 @@ function onLocationFound(e) {
     //populate the form with the location
     $("form input[name=lat]").val(e.latlng.lat);
     $("form input[name=lng]").val(e.latlng.lng);
+
+    //populate the authority
+    findAuthority();
 }
 
 //send a request to the server for more data when the user clicks a marker
@@ -152,9 +158,48 @@ function onPopupOpen(e) {
     }
 }
 
+//event fired when a tab is clicked
+function onSectionChange(e) {
+    //detect the current section
+    var currentSelection = $('#mode section.active');
+
+    /*if(currentSelection && currentSelection.hasClass('report')) {
+        //populate the authority
+        findAuthority();
+    }*/
+}
+
 /*------------------
   Helper Functions
 -------------------*/
+//get the local council responsible for the current report location
+function findAuthority() {
+    $.ajax({
+        type: 'GET',
+        url: '/findAuthority',
+        // data to be added to query string
+        data: { 
+            'lat': $("#form-report input[name=lat]").val(),
+            'lng': $("#form-report input[name=lng]").val()
+        },
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            findAuthoritySuccess(data);
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error getting data from the database.')
+        }
+    });
+}
+
+function findAuthoritySuccess(data) {
+    if(data && data[0]) {
+        $("#form-report input[name=submitto]").val(data[0].lga.toLowerCase());
+        $("#form-report input[name=fid]").val(data[0].id);
+    }
+}
+
 function getDetails(request) {
     $.ajax({
         type: 'GET',
@@ -174,8 +219,8 @@ function getDetails(request) {
 }
 
 function getDetailsSuccess(data) {
-    console.log('get details succeeded');
-    console.log(data[0]);
+    //console.log('get details succeeded');
+    //console.log(data[0]);
 
     var out = '';
     for(var key in data[0]) {
@@ -245,6 +290,11 @@ var myGeoJLayer = L.geoJson(null, {
             return L.marker(latlng, {
                 icon: eventIcon
             });
+        },
+        else if(feature.properties.type && feature.properties.type === 'report') {
+            return L.marker(latlng, {
+                icon: eventIcon
+            });
         }
         else {
             return L.marker(latlng);
@@ -262,4 +312,11 @@ map.on('popupopen', onPopupOpen);
 map.locate({
     setView: true, 
     maxZoom: 15
+});
+
+// add date picker to the form
+$(window).load(function() {
+    $('.datepicker').pickadate();
+
+    $('#mode section .title a').on('click', onSectionChange);
 });
