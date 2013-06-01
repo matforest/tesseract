@@ -33,6 +33,19 @@ function doFind(pointArr, type, callback, client) {
 
 }
 
+// Returns a GeoJSON feature for the given postgres row
+function createFeature(row, type) {
+  return { 
+    "type": "Feature", 
+    "properties": {
+      id: row.id,
+      name: row.name,
+      type: type
+    },
+    "geometry": JSON.parse(row.geom)
+  };
+}
+
 // Find the specified type of object in the search area
 exports.find = function(pointArr, type, callback) {
   console.log(conString);
@@ -49,12 +62,7 @@ exports.find = function(pointArr, type, callback) {
   var query = client.query(sql);
 
   query.on('row', function(row) {
-    results.push({
-      id: row.id,
-      name: row.name,
-      geom: JSON.parse(row.geom), 
-      type: type
-    });
+    results.push(createFeature(row, type));
   });
 
   query.on('error', function(err) {
