@@ -293,7 +293,7 @@ var myGeoJLayer = L.geoJson(null, {
         }
         else if(feature.properties.type && feature.properties.type === 'report') {
             return L.marker(latlng, {
-                icon: eventIcon
+                icon: faultReportIcon
             });
         }
         else {
