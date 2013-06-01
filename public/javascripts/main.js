@@ -56,13 +56,13 @@ function onDragEnd(e) {
             'se': bounds.getSouthEast().toString()
         },
         // type of data we are expecting in return:
-        dataType: 'text',
+        dataType: 'json',
         context: $('body'),
         success: function(data){
             getPointsSuccess(data);
         },
         error: function(xhr, type){
-            alert('Ajax error!')
+            alert('Oops, there was an error getting data from the database.')
         }
     });
 };
@@ -78,7 +78,9 @@ function onMapClick(e) {
 function onEachFeature(feature, layer) {
     // display the features name on click
     if (feature.properties && feature.properties.name) {
-        layer.bindPopup("<b>"+feature.properties.name+"</b><br>"+feature.properties.type);
+        var type = feature.properties.type === 'adult_education' ? 'Adult Community Education facility' : feature.properties.type;
+        layer.bindPopup("<b>"+feature.properties.name+"</b><br>" + type +
+            "<input type='hidden' name='pid' value='__"+feature.properties.id+","+feature.properties.type+"__'/>");
     }
 }
 
@@ -91,11 +93,55 @@ function onLocationFound(e) {
     L.circle(e.latlng, radius).addTo(map);
 }
 
+function onPopupOpen(e) {
+    var popupContent = e.popup._content;
+    if(popupContent) {
+        //do something if the content has a hidden field we know about
+//console.log(popupContent);
+        var idType = /__.*__/.exec(popupContent);
+        if(idType && idType[0]) {
+            //console.log(idType[0]);
+            idType = idType[0].replace(/__/g, '');
+            var arr = idType.split(',');
+            var request = {
+                id: arr[0],
+                type: arr[1]
+            };
+
+            getDetails(request);
+            //console.log(request);
+        }
+    }
+}
+
 /*------------------
   Helper Functions
 -------------------*/
+function getDetails(request) {
+    $.ajax({
+        type: 'GET',
+        url: '/getdetails',
+        // data to be added to query string
+        data: request,
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            getDetailsSuccess(data);
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error getting data from the database.')
+        }
+    });
+}
+
+function getDetailsSuccess(data) {
+    console.log('get details succeeded');
+    console.log(data);
+}
+
 function getPointsSuccess(data) {
-    data = JSON.parse(data);
+    //data = JSON.parse(data);
     var newData = [];
     console.log('returned ' + data.length + ' results');
     console.log('already ' + cache.length + ' items in the cache');
@@ -147,6 +193,9 @@ var myGeoJLayer = L.geoJson(null, {
                 icon: communityEducationIcon
             });
         }
+        else {
+            return L.marker(latlng);
+        }
     },
     onEachFeature: onEachFeature
 }).addTo(map);
@@ -154,6 +203,7 @@ var myGeoJLayer = L.geoJson(null, {
 map.on('locationfound', onLocationFound);
 map.on('dragend', onDragEnd);
 map.on('click', onMapClick);
+map.on('popupopen', onPopupOpen);
 
 // trigger location search
 map.locate({
