@@ -3,13 +3,14 @@ config = require('./../config');
 
 var conString = config.conString;
 
-exports.insertEvent = function(reportDetails, callback) {
+exports.insertReport = function(reportDetails, callback) {
 
   var point = createWKTPoint(reportDetails.lat, reportDetails.lng);
 
   var table = config.defaultSchema + '.reports';
   var sql = 'insert into ' + table + ' (type, description, creator_email, creator_name, notify_creator, reported_on, fid, geom) ' + 
-            ' values ($1, $2, $3, $4, $5, now, %6, ST_SetSRID(ST_GeomFromText($7), 4326))';
+            ' values ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_GeomFromText($8), 4326));';
+
 
   var client = new pg.Client(conString);
   client.connect();
@@ -17,7 +18,10 @@ exports.insertEvent = function(reportDetails, callback) {
   var results = [];
 
   var params = [reportDetails.type, reportDetails.desc, reportDetails.creator_email, 
-                  reportDetails.creator_name, reportDetails.notify_creator, reportDetails.fid, point];
+                  reportDetails.creator_name, reportDetails.notify_creator, new Date(), reportDetails.fid, point];
+
+  // console.log('insertReport: ' + sql);
+  // console.log('params: ', params);
 
   var query = client.query(sql, params);
 

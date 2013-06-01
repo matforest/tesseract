@@ -1,6 +1,7 @@
 var queries = require('./queries'),
     events = require('./events'),
-  config = require('./../config');
+    reports = require('./reports'),
+    config = require('./../config');
 
 /*
  * GET home page.
@@ -77,20 +78,30 @@ exports.findAuthority = function(req, res) {
 
 exports.createReport = function(req, res) {
 
+    // var query = {
+    //   type: req.body.faulttype,
+    //   desc: req.body.desc,
+    //   creator_email: req.body.email,
+    //   creator_name: req.body.name,
+    //   notify_creator: req.body.notify,
+    //   fid: req.body.fid,
+    //   lat: req.body.lat,
+    //   lng: req.body.lng
+    // };
     var query = {
-      type: req.body.type,
-      description: req.body.description,
-      creator_email: req.body.creator_email,
-      creator_name: req.body.creator_name,
-      notify_creator: req.body.notify_creator,
-      reported_on: req.body.reported_on,
-      fid: req.body.fid,
-      lat: req.body.lat
+      type: 'req.body.faulttype',
+      desc: 'req.body.desc',
+      creator_email: 'req.body.email',
+      creator_name: 'req.body.name',
+      notify_creator: true,
+      fid: 1,
+      lat: '-34.93436',
+      lng: '138.61515'
     };
 
-    console.log('createEvent called; query: ', query);
+    console.log('createReport called; query: ', query);
 
-    events.insertEvent(query, function(results) {
+    reports.insertReport(query, function(results) {
       res.json(results);
       res.end();
   });
