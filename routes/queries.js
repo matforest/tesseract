@@ -172,7 +172,7 @@ function createFeature(row, type) {
 exports.findLocalGov = function(lat, lng, callback){
 
   var pointString = createWKTPoint(lat, lng);
-  var sql = "SELECT id, objectid, lgatype, abbname, lga, ST_AsGeoJSON(geom) as geom" + 
+  var sql = "SELECT id, objectid, lgatype, abbname, lga" + 
               " FROM " + config.defaultSchema + ".lga " + 
               " WHERE ST_within(ST_SetSRID(ST_GeomFromText($1), 4326), geom);";
 
