@@ -1,6 +1,7 @@
-var pg = require('pg');
+var pg = require('pg'),
+  config = require('./../config');
 
-var conString = "postgres://gis:mypassword@localhost:5432/gisdb";
+var conString = "postgres://gis:mypassword@"+config.db+":5432/gisdb";
 
 var typesToTables = {
   'playground' : 'playgrounds'
@@ -23,7 +24,7 @@ exports.findAll = function(pointArr, callback) {
 
 // Find the specified type of object in the search area
 exports.find = function(pointArr, type, callback) {
-
+  console.log(conString);
   var client = new pg.Client(conString);
   client.connect();
 

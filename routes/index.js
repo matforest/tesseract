@@ -1,7 +1,5 @@
-var queries = require('./queries');
-var config = require('./../config');
-
-
+var queries = require('./queries'),
+  config = require('./../config');
 
 /*
  * GET home page.
