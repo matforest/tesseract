@@ -36,9 +36,32 @@ create table if not exists gis_schema.schools (
   geom geometry
 );
 
-COPY gis_schema.schools(name, latitude, longitude) FROM '/home/ubuntu/tesseract/data/sites-and-services.csv' DELIMITER ',' CSV;
+/*COPY gis_schema.schools(name, latitude, longitude) FROM '/home/ubuntu/tesseract/data/sites-and-services.csv' DELIMITER ',' CSV;
 
 UPDATE gis_schema.schools
   SET geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
 
-CREATE INDEX idx_schools_geom ON gis_schema.schools USING GIST(geom);
+CREATE INDEX idx_schools_geom ON gis_schema.schools USING GIST(geom);*/
+
+-- libraries of SA excluding the state library
+create table if not exists gis_schema.libraries (
+  id serial PRIMARY KEY,
+  name varchar, 
+  address varchar,
+  phone varchar,
+  email varchar,
+  website varchar,
+  comment varchar,
+  hours varchar,
+  council varchar,
+  latitude double precision,
+  longitude double precision,
+  geom geometry
+);
+
+COPY gis_schema.libraries(name, address, phone, email, website, comment, hours, council, latitude, longitude) FROM '/home/ubuntu/tesseract/data/sa-libraries.csv' DELIMITER ',' CSV;
+
+/*UPDATE gis_schema.libraries
+  SET geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
+
+CREATE INDEX idx_libraries_geom ON gis_schema.libraries USING GIST(geom);*/
