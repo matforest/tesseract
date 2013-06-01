@@ -6,8 +6,9 @@ block styles
   link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/chosen/0.9.14/chosen.css")
 
 block content
-  h1(style="display: inline") #{constants.title}
-  h3(style="display: inline; padding-left: 10px").subheader #{constants.subtitle}
+  .text-center
+    h1(style="display: inline") #{constants.title}
+    h3(style="display: inline; padding-left: 10px").subheader #{constants.subtitle}
   hr
 
   select#featureSearch(data-placeholder="Select desired features", multiple="multiple")

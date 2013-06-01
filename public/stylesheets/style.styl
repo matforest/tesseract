@@ -1,5 +1,5 @@
 body
-  padding: 50px
+  padding 0 50px
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
 a
   color: #00B7FF
@@ -10,3 +10,23 @@ a
 #map
   margin-top 20px
   height 450px
+
+/* We use this media query to add styles to any device that supports media queries */
+@media only screen
+  body
+    padding 0 10px
+
+/* Used to alter styles for screens at least 768px wide. This is where the grid changes. */
+@media only screen and (min-width: 768px)
+  body
+    padding 0 20px
+
+/* Used to alter styles for screens at least 1280px wide. */
+@media only screen and (min-width: 1280px) {
+  body {
+    padding 0 50px
+  }
+}
+
+/* Used to alter styles for screens at least 1440px wide. */
+@media only screen and (min-width: 1440px) {}
