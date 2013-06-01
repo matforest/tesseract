@@ -1,6 +1,11 @@
 var pg = require('pg');
 var config = require('./../config');
 
+// FIXME move this
+var conString = "postgres://gis:mypassword@192.168.128.61:5432/tesseract2";
+var client = new pg.Client(conString);
+client.connect();
+
 /*
  * GET home page.
  */
@@ -27,33 +32,45 @@ exports.contact = function(req, res) {
 
 exports.getpoints = function(req, res) {
   console.log('received request at getpoints');
-  console.log(req.query);
-  console.log('NorthWest coord:' + req.query.nw);
+  // console.log(req.query);
+  // console.log('NorthWest coord:' + req.query.nw);
   
   var poly = createPolygon( [req.query.nw, req.query.ne, req.query.se, req.query.sw]  );
-  var query = createGeoQuery( poly );
+  var sql = createGeoQuery( poly );
 
-  console.log( 'Query: ' + query );
+  console.log( 'sql: ' + sql );
 
-  var rows = []; //result data from postgres
+  var query = client.query(sql);
+
   var results = []; //store for the json
 
-  /*for(var i=0, l = rows.length; i < l; i++) {
+  query.on('row', function(row) {
     results.push({
-      id: rows[i].id,
-      name: rows[i].name,
-      lat: rows[i].latitude,
-      lng: rows[i].longitude
+      id: row.gid,
+      name: row.name,
+      wkt: row.wkt
     });
-  }*/
+  });
 
-  res.json(results);
-  res.end;
+  query.on('error', function(err) {
+    console.log('Error: ', err);
+  });
+  
+  query.on('end', function() { 
+    console.log('results: ', results);
+    
+    res.json(results);
+    res.end;
+  });
+
 }
+
+// client.end();
+
 
 function createGeoQuery( polygonStr ) {
 
-  return "SELECT count(*) FROM playgrounds WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
+  return "SELECT gid, name, ST_AsGeoJSON(the_geom) as wkt FROM playgrounds WHERE ST_within(the_geom, ST_SetSRID(ST_GeomFromText('" + polygonStr + "'), 4326) );";
 }
 
 
