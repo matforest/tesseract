@@ -18,11 +18,12 @@ create table if not exists gis_schema.ace (
 );
 
 --COPY gis_schema.ace(provider_name, region, phone, email, contact, address, latitude, longitude) FROM '/path/to/csv/dfeest-listed-adult-community-education-providers-2012-13.csv' DELIMITER ',' CSV;
+--\copy gis_schema.ace(provider_name, region, phone, email, contact, address, latitude, longitude) FROM '/home/ubuntu/tesseract/data/dfeest-listed-adult-community-education-providers-2012-13.csv' WITH DELIMITER ',';
 
 /*alter table gis_schema.ace
-  add column geometry geometry(POINT, 4326);
+  add column geom geometry;
 
 UPDATE gis_schema.ace 
-  SET geometry = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
+  SET geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
 
 CREATE INDEX idx_ace_geom ON gis_schema.ace USING GIST(geom);*/
