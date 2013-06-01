@@ -41,10 +41,10 @@ block scriptsAfter
 
     function onDragEnd(e) {
       var bounds = map.getBounds();
-      console.log('NW: ' + bounds.getNorthWest());
+      /*console.log('NW: ' + bounds.getNorthWest());
       console.log('NE: ' + bounds.getNorthEast());
       console.log('SE: ' + bounds.getSouthEast());
-      console.log('SW: ' + bounds.getSouthWest());
+      console.log('SW: ' + bounds.getSouthWest());*/
 
       $.ajax({
         type: 'GET',
@@ -60,12 +60,14 @@ block scriptsAfter
         dataType: 'text',
         context: $('body'),
         success: function(data){
-          // Supposing this JSON payload was received:
-          //   {"project": {"id": 42, "html": "<div>..." }}
-          // append the HTML to context object.
-          //this.append(data.project.html)
           console.log('success');
-          console.log(data);
+
+          data = JSON.parse(data);
+
+          for(var i=0, l=data.length; i<l; i++) {
+            //console.log(data[i].name);
+            myGeoJLayer.addData(data[i].wkt);
+          }
         },
         error: function(xhr, type){
           alert('Ajax error!')

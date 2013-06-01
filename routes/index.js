@@ -48,7 +48,7 @@ exports.getpoints = function(req, res) {
     results.push({
       id: row.gid,
       name: row.name,
-      wkt: row.wkt
+      wkt: JSON.parse(row.wkt)
     });
   });
 

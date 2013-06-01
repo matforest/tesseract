@@ -27,3 +27,18 @@ UPDATE gis_schema.ace
   SET geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
 
 CREATE INDEX idx_ace_geom ON gis_schema.ace USING GIST(geom);*/
+
+-- Schools Sites and Services
+create table if not exists gis_schema.schools (
+  name varchar,
+  latitude double precision,
+  longitude double precision,
+  geom geometry
+);
+
+COPY gis_schema.schools(name, latitude, longitude) FROM '/home/ubuntu/tesseract/data/sites-and-services.csv' DELIMITER ',' CSV;
+
+UPDATE gis_schema.schools
+  SET geom = ST_SetSRID(ST_MakePoint(longitude,latitude),4326);
+
+CREATE INDEX idx_schools_geom ON gis_schema.schools USING GIST(geom);
