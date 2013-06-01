@@ -35,5 +35,9 @@ exports.insertEvent = function(eventDetails, callback) {
 
 function createWKTPoint(lat, lng) {
 
-  return 'POINT('+lng+' '+lat+')';
+  if (lat == undefined || lng == undefined) {
+    throw new Error('bad coords, lat=' + lat + ', lng=' + lng);
+  }
+
+  return 'POINT(' + lng + ' ' + lat + ')';
 }
