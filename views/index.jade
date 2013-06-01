@@ -37,6 +37,17 @@ block content
   section#details_section
     h3 Details
     #details
+    #form
+      form(method="POST", action="/createevent")
+        .row
+          .large-4.columns
+            label(for="Name") Event Name:
+            input(type="text", name="name", required="required")
+        .row
+          .large-3.columns
+            input(type="hidden", name="lat", value="-34.5")
+              input(type="hidden", name="lng", value="138.5")
+            input(type="submit", value="Create Event")
     hr
 
 block scriptsAfter

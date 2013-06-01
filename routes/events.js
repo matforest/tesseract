@@ -1,6 +1,8 @@
 var pg = require('pg'),
 config = require('./../config');
 
+var conString = config.conString;
+
 exports.insertEvent = function(eventDetails, callback) {
 
   var point = createWKTPoint(eventDetails.lat, eventDetails.lng);
