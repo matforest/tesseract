@@ -1,4 +1,7 @@
 var map = L.map('map').setView([-34.9270311, 138.601038], 15);
+var layerGroup = L.layerGroup();
+var layerSchool, layerLibrary, layerACE, layerPlayground, layerEvent, layerReport;
+
 // stores the items that have been added to the map
 var cache = [];
 
@@ -330,7 +333,61 @@ function getPointsSuccess(data) {
 
     console.log('adding ' + newData.length + ' items to the map');
 
-    myGeoJLayer.addData(newData);
+    for(var k=0, lll = newData.length; k < lll; k++) {
+        if(newData[k].properties.type === 'school') {
+            layerSchool.addData(newData[k]);
+        }
+        else if(newData[k].properties.type === 'report') {
+            layerReport.addData(newData[k]);
+        }
+        else if(newData[k].properties.type === 'event') {
+            layerEvent.addData(newData[k]);
+        }
+        else if(newData[k].properties.type === 'adult_education') {
+            layerACE.addData(newData[k]);
+        }
+        else if(newData[k].properties.type === 'playground') {
+            layerPlayground.addData(newData[k]);
+        }
+        else if(newData[k].properties.type === 'library') {
+            layerLibrary.addData(newData[k]);
+        }
+    }
+}
+
+function pointToLayer(feature, latlng) {
+    if(feature.properties.type && feature.properties.type === 'playground') {
+        return L.marker(latlng, {
+            icon: playgroundIcon });
+    }
+    else if(feature.properties.type && feature.properties.type === 'library') {
+        return L.marker(latlng, {
+            icon: libraryIcon
+        });
+    }
+    else if(feature.properties.type && feature.properties.type === 'school') {
+        return L.marker(latlng, {
+            icon: schoolIcon
+        });
+    }
+    else if(feature.properties.type && feature.properties.type === 'adult_education') {
+        return L.marker(latlng, {
+            icon: communityEducationIcon
+        });
+    }
+    else if(feature.properties.type && feature.properties.type === 'event') {
+        return L.marker(latlng, {
+            icon: eventIcon
+        });
+    }
+    else if(feature.properties.type && feature.properties.type === 'report') {
+        return L.marker(latlng, {
+            icon: faultReportIcon
+        });
+    }
+    else {
+        return L.marker(latlng);
+    }
 }
 
 function submitCreateEventSuccess() {
@@ -357,44 +414,46 @@ function submitFaultReportSuccess() {
   Initialisation stuff
 ----------------------*/
 
-// add features to the map
-var myGeoJLayer = L.geoJson(null, {
-    pointToLayer: function (feature, latlng) {
-        if(feature.properties.type && feature.properties.type === 'playground') {
-            return L.marker(latlng, {
-                icon: playgroundIcon });
-        }
-        else if(feature.properties.type && feature.properties.type === 'library') {
-            return L.marker(latlng, {
-                icon: libraryIcon
-            });
-        }
-        else if(feature.properties.type && feature.properties.type === 'school') {
-            return L.marker(latlng, {
-                icon: schoolIcon
-            });
-        }
-        else if(feature.properties.type && feature.properties.type === 'adult_education') {
-            return L.marker(latlng, {
-                icon: communityEducationIcon
-            });
-        }
-        else if(feature.properties.type && feature.properties.type === 'event') {
-            return L.marker(latlng, {
-                icon: eventIcon
-            });
-        }
-        else if(feature.properties.type && feature.properties.type === 'report') {
-            return L.marker(latlng, {
-                icon: faultReportIcon
-            });
-        }
-        else {
-            return L.marker(latlng);
-        }
-    },
-    onEachFeature: onEachFeature
-}).addTo(map);
+function initLayers() {
+    layerSchool = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerReport = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerEvent = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerACE = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerLibrary = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerPlayground = L.geoJson(null, {
+        pointToLayer: pointToLayer,
+        onEachFeature: onEachFeature
+    });
+
+    layerGroup.addLayer(layerACE);
+    layerGroup.addLayer(layerEvent);
+    layerGroup.addLayer(layerLibrary);
+    layerGroup.addLayer(layerPlayground);
+    layerGroup.addLayer(layerReport);
+    layerGroup.addLayer(layerSchool);
+
+    layerGroup.addTo(map);
+}
 
 // Registers all the event listeners on this page
 function initEventListeners() {
@@ -456,6 +515,19 @@ $('#form-discover #filterBoxes input[type="checkbox"]').change(function() {
 
 //runs when all the js has loaded on the page
 $(window).load(function() {
+    // set up map geojson layers
+    initLayers();
+
+    var overlayMaps = {        
+        "Community Education": layerACE,
+        "Libraries": layerLibrary,
+        "Playgrounds": layerPlayground,
+        "Schools": layerSchool
+    };
+
+    L.control.layers(null, overlayMaps).addTo(map);
+
+
     // trigger location search to center the map on the user
     map.locate({
         setView: true, 
