@@ -279,12 +279,12 @@ function getDetailsSuccess(data) {
     //console.log('get details succeeded');
     //console.log(data[0]);
 
-    var out = '<div class="large-12 small-12 columns">';
-    out += '<h3>'+data[0].name + '</h3></div>'
-    
+    var out = '<div class="row"><div class="large-12 small-12 columns">';
+    out += '<h3>'+data[0].name + '</h3></div></div>'
+    out+="<div class='row'>";
 
     for(var key in data[0]) {
-        if(key === 'id' || key === 'geom' || key === 'name' || key === 'fid' || key === 'location_type' || data[0][key] == 'NULL') {
+        if(key === 'id' || key === 'geom' || key === 'name' || key === 'fid' || key === 'location_type' || data[0][key] == 'NULL' || data[0][key] == null) {
             continue;
         }
 
@@ -292,6 +292,7 @@ function getDetailsSuccess(data) {
         out += '<strong style="text-transform: capitalize">' + key + '</strong>: ' + data[0][key];
         out += "</div>";
     }
+    out += "</div>";
 
     $('#details').html(out);
 }
@@ -458,11 +459,13 @@ function initLayers() {
     });
 
     /*layerGroup.addLayer(layerACE);
-    layerGroup.addLayer(layerEvent);
     layerGroup.addLayer(layerLibrary);
     layerGroup.addLayer(layerPlayground);
-    layerGroup.addLayer(layerReport);
     layerGroup.addLayer(layerSchool);*/
+
+    // events and reports always shown, others toggled by checkboxes
+    layerGroup.addLayer(layerEvent);
+    layerGroup.addLayer(layerReport);
 
     layerGroup.addTo(map);
 }
