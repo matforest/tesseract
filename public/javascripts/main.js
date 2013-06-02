@@ -446,6 +446,14 @@ $('#form-discover form select[name="council"]').change(function() {
     map.panTo(new L.LatLng(lat, lng));
 });
 
+// Bind function to update the map when filter checkboxes are changed
+$('#form-discover #filterBoxes input[type="checkbox"]').change(function() {
+    var box = $(this);
+    var checked = box.is(':checked');
+    var type = box.attr('name');
+    console.log('Type: ' + type + ', checked: ' + checked);
+});
+
 //runs when all the js has loaded on the page
 $(window).load(function() {
     // trigger location search to center the map on the user
