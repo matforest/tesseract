@@ -9,3 +9,4 @@ This is project Tesseract - this is going to be EPIC
 3. npm start
 4. browse to localhost:3000
 
+If you want to fork Tesseract as a child process, execute run.sh.
