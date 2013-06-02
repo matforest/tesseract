@@ -211,7 +211,8 @@ function createWKTPoint(lat, lng) {
 
 exports.findAllLocalGovs = function(callback) {
 
-  var sql = "SELECT id, abbname FROM " + config.defaultSchema + ".lga order by abbname;";
+  var sql = "SELECT id, abbname, ST_AsGeoJSON(ST_Centroid(geom)) as centroid " + 
+  " FROM " + config.defaultSchema + ".lga order by abbname;";
 
   var client = new pg.Client(conString);
   client.connect();
@@ -221,7 +222,11 @@ exports.findAllLocalGovs = function(callback) {
   var results = [];
 
   query.on('row', function(row) {
-    results.push( JSON.parse(JSON.stringify(row) )); 
+    results.push( {
+      id: row.id,
+      abbname: row.abbname,
+      centroid: JSON.parse(row.centroid)
+    }); 
   });
 
   query.on('error', function(err) {

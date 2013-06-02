@@ -424,9 +424,11 @@ function preloadLocalGovs() {
             var govSelect = $('#form-discover form select[name="council"]');
 
             $.each(data, function(i, elem) {
-                govSelect.append(
-                    $('<option></option>').val(elem.id).html(elem.abbname.toLowerCase())
-                );
+
+                var option = $('<option></option>').val(elem.id).html(elem.abbname.toLowerCase());
+                $.data(option, 'centroid', elem.centroid);
+
+                govSelect.append(option);
             });
         },
         error: function(xhr, type){
