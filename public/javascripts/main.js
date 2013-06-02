@@ -425,9 +425,7 @@ function preloadLocalGovs() {
 
             $.each(data, function(i, elem) {
 
-                var option = $('<option></option>').val(elem.id).html(elem.abbname.toLowerCase());
-                $.data(option, 'centroid', elem.centroid);
-
+                var option = $('<option></option>').val(elem.id).html(elem.abbname.toLowerCase()).data('centroid', elem.centroid);
                 govSelect.append(option);
             });
         },
@@ -437,6 +435,16 @@ function preloadLocalGovs() {
     });
 
 }
+
+// Bind an onchange to the council select to recentre the map
+$('#form-discover form select[name="council"]').change(function() {
+    var opt = $('#form-discover form select[name="council"] option:selected');
+    var centroid = opt.data('centroid');
+
+    var lng = centroid.coordinates[0];
+    var lat = centroid.coordinates[1];
+    map.panTo(new L.LatLng(lat, lng));
+});
 
 //runs when all the js has loaded on the page
 $(window).load(function() {
