@@ -16,15 +16,15 @@ block content
     #mode.section-container.vertical-tabs(data-section="vertical-tabs")
       section.find
         p.title(data-section-title)
-          a Find
+          a Discover 
         .content(data-section-content)
-          h4.subheader Find a facility in the local community
+          h4.subheader Discover a facility in the local community
           #form-create
-            form(method="POST", action="/search")
+            form(method="POST", action="")
               .row
                 label(for="Facility") Facility:
-                a.dropdown.button(data-dropdown="facilities") Facility
-                  ul#facilities.f-dropdown(data-dropdown-content)
+                a.button.dropdown(data-dropdown="facilities") Facility
+                  ul#facilities.f-dropdown
                     li test
                     li test 2
                     li ...
