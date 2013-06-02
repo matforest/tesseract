@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  .row
+    .small-12.large-12.columns
+      h1 #{constants.title} Help
+
+  .row
+    .small-12.large-12.columns
+      h2.subheader Using #{constants.title}
+      p
+        | #{constants.title} was designed to help people discover resources available 
+        | in their local community and to contribute to their community by listing 
+        | local events and reporting problems to the local council.
+
+  .row
+    .small-12.large-12.columns
+      h2.subheader Discover
+
+  .row
+    .small-12.large-12.columns
+      h2.subheader Create an Event
+      p
+        | Creating an event allows you to notify others in your community of a 
+        | community friendly event taking place. This could be a school fair or 
+        | a garage sale you are having.
+      p To creat a new event:
+      ol
+        li Click the Create tab on the top panel
+        li Choose a name of the event that will be displayed to others
+        li Pick the date of the event
+        li Enter a description of the event
+        li Enter your name
+        li
+          | The event will be created your current location by default. Clicking
+          | the map will allow you to pick a certain area to create the event at.
+        li Click the Create Event button
+
+  .row
+    .small-12.large-12.columns
+      h2.subheader Report a Fault
+      p
+        | Submitting a fault report allows you to notify the council and other users 
+        | of problems in the local community that need to be fixed.
+      p
+        | To submit a fault report:
+      ol
+        li Click the Report tab on the top panel
+        li Select a Fault type from the drop down list
+        li Enter a description of the fault that the council will see
+        li Enter your name
+        li Enter your email address and if you would like to be notified when the fault is fixed
+        li
+          | The fault will be submitted at your current location by default. Clicking
+          | the map will allow you to pick a certain area to report the fault at.
+        li Click the Submit Fault button

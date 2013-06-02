@@ -20,10 +20,10 @@ exports.about = function(req, res) {
   });
 }
 
-exports.contact = function(req, res) {
-  res.render('contact', {
+exports.help = function(req, res) {
+  res.render('help', {
     constants: config,
-    page: 'contact'
+    page: 'help'
   });
 }
 
