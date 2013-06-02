@@ -207,3 +207,30 @@ function createWKTPoint(lat, lng) {
 
   return 'POINT(' + lng + ' ' + lat + ')';
 }
+
+
+exports.findAllLocalGovs = function(callback) {
+
+  var sql = "SELECT id, abbname" + 
+              " FROM " + config.defaultSchema + ".lga;";
+
+  var client = new pg.Client(conString);
+  client.connect();
+
+  var query = client.query(sql);
+
+  var results = [];
+
+  query.on('row', function(row) {
+    results.push( JSON.parse(JSON.stringify(row) )); 
+  });
+
+  query.on('error', function(err) {
+    console.log('Error: ', err);
+  });
+  
+  query.on('end', function() { 
+    client.end();
+    callback(results);
+  });  
+}
