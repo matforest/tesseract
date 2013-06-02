@@ -1,7 +1,7 @@
 var config = {};
 
-config.title = 'Tesseract';
-config.subtitle = 'Doing awesum stuff with gov\'t data';
+config.title = 'MyCommunity';
+config.subtitle = 'Improving your community through feedback and discovery';
 
 config.http_port = process.env.NODE_ENV ? 80 : 3000;
 config.db = {};
