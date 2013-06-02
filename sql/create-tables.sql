@@ -32,8 +32,8 @@ create table if not exists gis_schema.reports (
  fid integer
 );
 
-create view gis_schema.reports_view (id, name, geom) as 
-  select id, 'Report: '||type, geom from gis_schema.reports;
+create view gis_schema.reports_view (id, name, geom, description) as 
+  select id, 'Report: '||type, geom, description from gis_schema.reports;
 
 --CREATE INDEX idx_events_geom ON gis_schema.events USING GIST(geom);
 
