@@ -211,8 +211,7 @@ function createWKTPoint(lat, lng) {
 
 exports.findAllLocalGovs = function(callback) {
 
-  var sql = "SELECT id, abbname" + 
-              " FROM " + config.defaultSchema + ".lga;";
+  var sql = "SELECT id, abbname FROM " + config.defaultSchema + ".lga order by abbname;";
 
   var client = new pg.Client(conString);
   client.connect();
