@@ -6,6 +6,7 @@ id
 );*/
 
 -- Events
+-- drop table gis_schema.events;
 create table if not exists gis_schema.events (
  id serial PRIMARY KEY,
  name varchar,
@@ -13,7 +14,9 @@ create table if not exists gis_schema.events (
  creator varchar,
  location_type varchar,
  fid integer,
- geom geometry
+ geom geometry,
+ startDate timestamp,
+ endDate timestamp
 );
 
 -- Reports (Faults)
