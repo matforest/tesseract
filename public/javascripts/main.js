@@ -1,4 +1,4 @@
-var map = L.map('map').setView([-34.93, 138.64], 13);
+var map = L.map('map').setView([-34.9270311, 138.601038], 15);
 // stores the items that have been added to the map
 var cache = [];
 
@@ -6,7 +6,9 @@ var cache = [];
 var prettyTypeNames = {
     'adult_education' : 'Adult Community Education facility',
     'report' : 'Fault Report',
-    'event' : 'Community Event'
+    'event' : 'Community Event',
+    'library' : 'Public Library',
+    'school' : 'School' 
 }
 
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
@@ -186,7 +188,7 @@ function onLocationFound(e) {
     var radius = e.accuracy / 2;
 
     L.marker(e.latlng).addTo(map)
-        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+        .bindPopup("We think you are within " + radius + " meters from this point");
 
     L.circle(e.latlng, radius).addTo(map);
 
@@ -254,8 +256,14 @@ function findAuthority() {
 
 function findAuthoritySuccess(data) {
     if(data && data[0]) {
+        // update the report form with the LGA the user is in
         $("#form-report input[name=submitto]").val(data[0].lga.toLowerCase());
         $("#form-report input[name=fid]").val(data[0].id);
+
+        // update the discover form with the LGA the user is in
+        if($("#form-discover select option").length > 0) {
+            $("#form-discover select").val(data[0].id);
+        }
     }
 }
 
@@ -281,12 +289,18 @@ function getDetailsSuccess(data) {
     //console.log('get details succeeded');
     //console.log(data[0]);
 
-    var out = '';
+    var out = '<div class="large-12 small-12 columns">';
+    out += '<h3>'+data[0].name + '</h3></div>'
+    
+
     for(var key in data[0]) {
-        if(key === 'id' || key === 'geom' || key === 'fid' || key === 'location_type' || data[0][key] == 'NULL') {
+        if(key === 'id' || key === 'geom' || key === 'name' || key === 'fid' || key === 'location_type' || data[0][key] == 'NULL') {
             continue;
         }
-        out += '<div class="large-6 small-12 columns"><strong style="text-transform: capitalize">' + key + '</strong>: ' + data[0][key] + '</div><br>';
+
+        out += '<div class="large-6 small-12 columns">';
+        out += '<strong style="text-transform: capitalize">' + key + '</strong>: ' + data[0][key];
+        out += "</div>";
     }
 
     $('#details').html(out);
@@ -399,24 +413,6 @@ function initEventListeners() {
     $('#mode section .title a').on('click', onSectionChange);
 }
 
-//runs when all the js has loaded on the page
-$(window).load(function() {
-    // trigger location search to center the map on the user
-    map.locate({
-        setView: true, 
-        maxZoom: 15
-    });
-
-    // add date picker to the form
-    $('.datepicker').pickadate();
-
-    initEventListeners();
-
-    preloadLocalGovs();
-});
-
-
-
 function preloadLocalGovs() {
 
     $.ajax({
@@ -439,3 +435,19 @@ function preloadLocalGovs() {
     });
 
 }
+
+//runs when all the js has loaded on the page
+$(window).load(function() {
+    // trigger location search to center the map on the user
+    map.locate({
+        setView: true, 
+        maxZoom: 15
+    });
+
+    // add date picker to the form
+    $('.datepicker').pickadate();
+
+    initEventListeners();
+
+    preloadLocalGovs();
+});
