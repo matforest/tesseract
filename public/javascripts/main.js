@@ -123,6 +123,54 @@ function onEachFeature(feature, layer) {
     }
 }
 
+// fired when the user clicks create event button
+function onFormCreateEventSubmit(e) {
+    $.ajax({
+        type: 'POST',
+        url: '/createevent',
+        // data to be added to query string
+        data: $('#form-create form').serialize(),
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            alert('create event succeeded');
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error creating your event, please try again later.')
+        }
+    });
+
+    // stop the default form submit from firing
+    e.preventDefault();
+
+    return false;
+}
+
+// fired when the user clicks submit fault button
+function onFormReportFaultSubmit(e) {
+    $.ajax({
+        type: 'POST',
+        url: '/createreport',
+        // data to be added to query string
+        data: $('#form-report form').serialize(),
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            alert('submit report succeeded');
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error creating your event, please try again later.')
+        }
+    });
+
+    // stop the default form submit from firing
+    e.preventDefault();
+
+    return false;
+}
+
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
 
@@ -303,20 +351,33 @@ var myGeoJLayer = L.geoJson(null, {
     onEachFeature: onEachFeature
 }).addTo(map);
 
-map.on('locationfound', onLocationFound);
-map.on('dragend', onDragEnd);
-map.on('click', onMapClick);
-map.on('popupopen', onPopupOpen);
+// Registers all the event listeners on this page
+function initEventListeners() {
+    //map listeners
+    map.on('locationfound', onLocationFound);
+    map.on('dragend', onDragEnd);
+    map.on('click', onMapClick);
+    map.on('popupopen', onPopupOpen);
 
-// trigger location search
-map.locate({
-    setView: true, 
-    maxZoom: 15
-});
+    //form event listeners
+    //$('#form-create form').on('submit', onFormCreateEventSubmit);
+    $("#form-create form").submit(onFormCreateEventSubmit);
+    $('#form-report form').submit(onFormReportFaultSubmit);
 
-// add date picker to the form
+    //tabbed dialog event listener
+    $('#mode section .title a').on('click', onSectionChange);
+}
+
+//runs when all the js has loaded on the page
 $(window).load(function() {
+    // trigger location search to center the map on the user
+    map.locate({
+        setView: true, 
+        maxZoom: 15
+    });
+
+    // add date picker to the form
     $('.datepicker').pickadate();
 
-    $('#mode section .title a').on('click', onSectionChange);
+    initEventListeners();
 });
