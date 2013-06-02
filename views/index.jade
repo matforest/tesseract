@@ -22,23 +22,22 @@ block content
           #form-discover
             form(method="POST", action="")
               .row
-                label(for="Facility") Facility:
-                a.button.dropdown(data-dropdown="facilities") Facility
-                  ul#facilities.f-dropdown
-                    li test
-                    li test 2
-                    li ...
+                .large-3.columns
+                  label(for='playground') Playgrounds
+                  input(type='checkbox', name='playground')
+                .large-3.columns
+                  label(for='ace') Adult Community Education
+                  input(type='checkbox', name='ace')
+                .large-3.columns
+                  label(for='library') Public Libraries
+                  input(type='checkbox', name='library')
+                .large-3.columns
+                  label(for='school') Schools
+                  input(type='checkbox', name='school')
                 .row
                   .large-3.columns
                     label(for="Council") Council:                
                     select(name="council", required="required")
-                  .large-9.columns
-                    label(for="within") Within:
-                    a.small.dropdown.button(data-dropdown="within") Within
-                      ul#within.f-dropdown(data-dropdown-content)
-                        li 10km
-                        li 20km
-                        li ...
       section.create
         p.title(data-section-title)
           a Create
