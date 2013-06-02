@@ -5,12 +5,16 @@ body {
 a {
   color: #00b7ff;
 }
+#form-report input[name=submitto] {
+  text-transform: capitalize;
+}
+#form-discover form option,
+#form-discover form select {
+  text-transform: capitalize;
+}
 #map {
   margin-top: 20px;
   height: 450px;
-}
-#form-report input[name=submitto] {
-  text-transform: capitalize;
 }
 .alert-box.success {
   display: none;

@@ -48,21 +48,21 @@ exports.getdetails = function(req, res) {
 
 exports.createEvent = function(req, res) {
 
-    var query = {
-      lat: req.body.lat,
-      lng: req.body.lng,
-      name: req.body.name,
-      desc: req.body.desc,
-      creator: req.body.creator,
-      location_type: req.body.location_type,
-      fid: req.body.fid
-    };
+  var query = {
+    lat: req.body.lat,
+    lng: req.body.lng,
+    name: req.body.name,
+    desc: req.body.desc,
+    creator: req.body.creator,
+    location_type: req.body.location_type,
+    fid: req.body.fid
+  };
 
-    console.log('createEvent called; query: ', query);
+  console.log('createEvent called; query: ', query);
 
-    events.insertEvent(query, function(results) {
-      res.json(results);
-      res.end();
+  events.insertEvent(query, function(results) {
+    res.json(results);
+    res.end();
   });
 
 }
@@ -94,6 +94,15 @@ exports.createReport = function(req, res) {
     reports.insertReport(query, function(results) {
       res.json(results);
       res.end();
-  });
+    });
 
+}
+
+
+exports.findAllLocalGovs = function(req, res) {
+
+  queries.findAllLocalGovs(function(results) {
+    res.json(results);
+    res.end();
+  });
 }
