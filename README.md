@@ -8,3 +8,4 @@ This is project Tesseract - this is going to be EPIC
 2. npm install
 3. npm start
 4. browse to localhost:3000
+
