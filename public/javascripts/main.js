@@ -380,4 +380,31 @@ $(window).load(function() {
     $('.datepicker').pickadate();
 
     initEventListeners();
+
+    preloadLocalGovs();
 });
+
+
+
+function preloadLocalGovs() {
+
+    $.ajax({
+        type: 'GET',
+        url: '/findAllLocalGovs',
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            var govSelect = $('#form-discover form select[name="council"]');
+
+            $.each(data, function(i, elem) {
+                govSelect.append(
+                    $('<option></option>').val(elem.id).html(elem.abbname.toLowerCase())
+                );
+            });
+        },
+        error: function(xhr, type){
+            console.log('Oops, there was an error getting local govs from the database.')
+        }
+    });
+
+}

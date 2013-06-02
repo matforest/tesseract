@@ -19,7 +19,7 @@ block content
           a Discover 
         .content(data-section-content)
           h4.subheader Discover a facility in the local community
-          #form-create
+          #form-discover
             form(method="POST", action="")
               .row
                 label(for="Facility") Facility:
@@ -31,7 +31,7 @@ block content
                 .row
                   .large-3.columns
                     label(for="Council") Council:                
-                    input(type="text", name="council", required="required")
+                    select(name="council", required="required")
                   .large-9.columns
                     label(for="within") Within:
                     a.small.dropdown.button(data-dropdown="within") Within
