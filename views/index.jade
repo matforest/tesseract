@@ -47,6 +47,9 @@ block content
           #form-create
             form(method="POST", action="/createevent")
               .row
+                .large-12.small-12.columns
+                  .alert-box.success(data-alert) Event created successfully.
+                    a.close(href="#")&times;
                 .large-5.columns
                   label(for="Name") Event Name:
                   input(type="text", name="name", required="required", placeholder="e.g. garage sale, barbecue, school fair")
@@ -77,11 +80,19 @@ block content
           #form-report
             form(method="POST", action="/createreport")
               .row
+                .large-12.small-12.columns
+                  .alert-box.success(data-alert) Fault report submitted successfully.
+                    a.close(href="#")&times;
                 .large-5.columns
                   label(for="faulttype") Fault Type:
                   select(name='faulttype')
-                    option(value='street sign') Street Sign
+                    option(value='street sign') Broken Street Sign
+                    option(value='footpath') Damaged Footpath
+                    option(value='playground') Damaged Playground Equipment
+                    option(value='rubbish') Dumped Rubbish
                     option(value='graffiti') Graffiti
+                    option(value='other') Other
+                .large-7.columns
               .row
                 .large-10.small-12.columns
                   label(for="desc") Fault Description:

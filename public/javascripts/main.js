@@ -1,6 +1,13 @@
 var map = L.map('map').setView([-34.93, 138.64], 13);
-//stores the items that have been added to the map
+// stores the items that have been added to the map
 var cache = [];
+
+// tidy up the marker display names
+var prettyTypeNames = {
+    'adult_education' : 'Adult Community Education facility',
+    'report' : 'Fault Report',
+    'event' : 'Community Event'
+}
 
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
@@ -117,7 +124,11 @@ function onMapClick(e) {
 function onEachFeature(feature, layer) {
     // display the features name on click
     if (feature.properties && feature.properties.name) {
-        var type = feature.properties.type === 'adult_education' ? 'Adult Community Education facility' : feature.properties.type;
+        var type = prettyTypeNames[feature.properties.type];
+        if(!type) {
+            type = feature.properties.type;
+        }
+        //feature.properties.type === 'adult_education' ? 'Adult Community Education facility' : feature.properties.type;
         layer.bindPopup("<b>"+feature.properties.name+"</b><br>" + type +
             "<input type='hidden' name='pid' value='__"+feature.properties.id+","+feature.properties.type+"__'/>");
     }
@@ -134,7 +145,7 @@ function onFormCreateEventSubmit(e) {
         dataType: 'json',
         context: $('body'),
         success: function(data){
-            alert('create event succeeded');
+            submitCreateEventSuccess();
         },
         error: function(xhr, type){
             alert('Oops, there was an error creating your event, please try again later.')
@@ -158,7 +169,7 @@ function onFormReportFaultSubmit(e) {
         dataType: 'json',
         context: $('body'),
         success: function(data){
-            alert('submit report succeeded');
+            submitFaultReportSuccess();
         },
         error: function(xhr, type){
             alert('Oops, there was an error creating your event, please try again later.')
@@ -272,7 +283,7 @@ function getDetailsSuccess(data) {
 
     var out = '';
     for(var key in data[0]) {
-        if(key === 'id' || key === 'geom' || key === 'fid' || data[0][key] == 'NULL') {
+        if(key === 'id' || key === 'geom' || key === 'fid' || key === 'location_type' || data[0][key] == 'NULL') {
             continue;
         }
         out += '<div class="large-6 small-12 columns"><strong style="text-transform: capitalize">' + key + '</strong>: ' + data[0][key] + '</div><br>';
@@ -306,6 +317,26 @@ function getPointsSuccess(data) {
     console.log('adding ' + newData.length + ' items to the map');
 
     myGeoJLayer.addData(newData);
+}
+
+function submitCreateEventSuccess() {
+    // clear the form data
+    $('#form-create form').each (function(){
+        this.reset();
+    });
+
+    // display success message to the user
+    $('#form-create form .alert-box').show();
+}
+
+function submitFaultReportSuccess() {
+    // clear the form data
+    $('#form-report form').each (function(){
+        this.reset();
+    });
+
+    // display success message to the user
+    $('#form-report form .alert-box').show();
 }
 
 /*---------------------
