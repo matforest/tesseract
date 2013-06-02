@@ -18,7 +18,27 @@ block content
         p.title(data-section-title)
           a Find
         .content(data-section-content)
-          p Content for find
+          h4.subheader Find a facility in the local community
+          #form-create
+            form(method="POST", action="/search")
+              .row
+                label(for="Facility") Facility:
+                a.dropdown.button(data-dropdown="facilities") Facility
+                  ul#facilities.f-dropdown(data-dropdown-content)
+                    li test
+                    li test 2
+                    li ...
+                .row
+                  .large-3.columns
+                    label(for="Council") Council:                
+                    input(type="text", name="council", required="required")
+                  .large-9.columns
+                    label(for="within") Within:
+                    a.small.dropdown.button(data-dropdown="within") Within
+                      ul#within.f-dropdown(data-dropdown-content)
+                        li 10km
+                        li 20km
+                        li ...
       section.create
         p.title(data-section-title)
           a Create
