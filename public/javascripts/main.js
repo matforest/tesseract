@@ -1,4 +1,5 @@
-var map = L.map('map').setView([-34.9270311, 138.601038], 15);
+var DEFAULT_ZOOM =  15;
+var map = L.map('map').setView([-34.9270311, 138.601038], DEFAULT_ZOOM);
 var layerGroup = L.layerGroup();
 var layerSchool, layerLibrary, layerACE, layerPlayground, layerEvent, layerReport;
 
@@ -70,29 +71,12 @@ var marker = L.marker();
   Map Events
 ---------------*/
 function onDragEnd(e) {
-    var bounds = map.getBounds();
-
-    $.ajax({
-        type: 'GET',
-        url: '/getpoints',
-        // data to be added to query string
-        data: { 
-            'nw': bounds.getNorthWest().toString(),
-            'ne': bounds.getNorthEast().toString(),
-            'sw': bounds.getSouthWest().toString(),
-            'se': bounds.getSouthEast().toString()
-        },
-        // type of data we are expecting in return:
-        dataType: 'json',
-        context: $('body'),
-        success: function(data){
-            getPointsSuccess(data);
-        },
-        error: function(xhr, type){
-            alert('Oops, there was an error getting data from the database.')
-        }
-    });
+    getPointsForBounds();
 };
+
+function onMoveEnd(e) {
+    getPointsForBounds();  
+}
 
 function onMapClick(e) {
     /*popup
@@ -267,6 +251,9 @@ function findAuthoritySuccess(data) {
         if($("#form-discover select option").length > 0) {
             $("#form-discover select").val(data[0].id);
         }
+
+        //get the points for the local area
+        getPointsForBounds();
     }
 }
 
@@ -307,6 +294,31 @@ function getDetailsSuccess(data) {
     }
 
     $('#details').html(out);
+}
+
+function getPointsForBounds() {
+    var bounds = map.getBounds();
+
+    $.ajax({
+        type: 'GET',
+        url: '/getpoints',
+        // data to be added to query string
+        data: { 
+            'nw': bounds.getNorthWest().toString(),
+            'ne': bounds.getNorthEast().toString(),
+            'sw': bounds.getSouthWest().toString(),
+            'se': bounds.getSouthEast().toString()
+        },
+        // type of data we are expecting in return:
+        dataType: 'json',
+        context: $('body'),
+        success: function(data){
+            getPointsSuccess(data);
+        },
+        error: function(xhr, type){
+            alert('Oops, there was an error getting data from the database.')
+        }
+    });
 }
 
 function getPointsSuccess(data) {
@@ -445,12 +457,12 @@ function initLayers() {
         onEachFeature: onEachFeature
     });
 
-    layerGroup.addLayer(layerACE);
+    /*layerGroup.addLayer(layerACE);
     layerGroup.addLayer(layerEvent);
     layerGroup.addLayer(layerLibrary);
     layerGroup.addLayer(layerPlayground);
     layerGroup.addLayer(layerReport);
-    layerGroup.addLayer(layerSchool);
+    layerGroup.addLayer(layerSchool);*/
 
     layerGroup.addTo(map);
 }
@@ -459,7 +471,8 @@ function initLayers() {
 function initEventListeners() {
     //map listeners
     map.on('locationfound', onLocationFound);
-    map.on('dragend', onDragEnd);
+    //map.on('dragend', onDragEnd);
+    map.on('moveend', onMoveEnd);
     map.on('click', onMapClick);
     map.on('popupopen', onPopupOpen);
 
@@ -470,6 +483,64 @@ function initEventListeners() {
 
     //tabbed dialog event listener
     $('#mode section .title a').on('click', onSectionChange);
+
+    // Bind an onchange to the council select to recentre the map
+    $('#form-discover form select[name="council"]').change(function() {
+        var opt = $('#form-discover form select[name="council"] option:selected');
+        var centroid = opt.data('centroid');
+
+        var lng = centroid.coordinates[0];
+        var lat = centroid.coordinates[1];
+        map.panTo(new L.LatLng(lat, lng));
+
+        getPointsForBounds();
+    });
+
+    // Bind function to update the map when filter checkboxes are changed
+    $('#form-discover #filterBoxes input[type="checkbox"]').change(function() {
+        var box = $(this);
+        var checked = box.is(':checked');
+        var type = box.attr('name');
+
+        //console.log('Type: ' + type + ', checked: ' + checked);
+
+        if(type === 'school') {
+            if(checked)
+                layerGroup.addLayer(layerSchool);
+            else
+                layerGroup.removeLayer(layerSchool);
+        }
+        else if(type === 'report') {
+            if(checked)
+                layerGroup.addLayer(layerReport);
+            else
+                layerGroup.removeLayer(layerReport);
+        }
+        else if(type === 'event') {
+            if(checked)
+                layerGroup.addLayer(layerEvent);
+            else
+                layerGroup.removeLayer(layerEvent);
+        }
+        else if(type === 'ace') {
+            if(checked)
+                layerGroup.addLayer(layerACE);
+            else
+                layerGroup.removeLayer(layerACE);
+        }
+        else if(type === 'playground') {
+            if(checked)
+                layerGroup.addLayer(layerPlayground);
+            else
+                layerGroup.removeLayer(layerPlayground);
+        }
+        else if(type === 'library') {
+            if(checked)
+                layerGroup.addLayer(layerLibrary);
+            else
+                layerGroup.removeLayer(layerLibrary);
+        }
+    });
 }
 
 function preloadLocalGovs() {
@@ -495,24 +566,6 @@ function preloadLocalGovs() {
 
 }
 
-// Bind an onchange to the council select to recentre the map
-$('#form-discover form select[name="council"]').change(function() {
-    var opt = $('#form-discover form select[name="council"] option:selected');
-    var centroid = opt.data('centroid');
-
-    var lng = centroid.coordinates[0];
-    var lat = centroid.coordinates[1];
-    map.panTo(new L.LatLng(lat, lng));
-});
-
-// Bind function to update the map when filter checkboxes are changed
-$('#form-discover #filterBoxes input[type="checkbox"]').change(function() {
-    var box = $(this);
-    var checked = box.is(':checked');
-    var type = box.attr('name');
-    console.log('Type: ' + type + ', checked: ' + checked);
-});
-
 //runs when all the js has loaded on the page
 $(window).load(function() {
     // set up map geojson layers
@@ -525,13 +578,13 @@ $(window).load(function() {
         "Schools": layerSchool
     };
 
-    L.control.layers(null, overlayMaps).addTo(map);
+    //L.control.layers(null, overlayMaps).addTo(map);
 
 
     // trigger location search to center the map on the user
     map.locate({
         setView: true, 
-        maxZoom: 15
+        maxZoom: DEFAULT_ZOOM
     });
 
     // add date picker to the form

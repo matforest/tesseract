@@ -16,12 +16,18 @@ block content
     #mode.section-container.vertical-tabs(data-section="vertical-tabs")
       section.find
         p.title(data-section-title)
-          a Discover 
+          a Discover
         .content(data-section-content)
           h4.subheader Discover a facility in the local community
           #form-discover
             form(method="POST", action="")
+              .row
+                .large-3.columns
+                  label(for="Council") Select your local council:                
+                  select(name="council", required="required")
               #filterBoxes.row
+                .large-12.columns
+                  label(style='margin-bottom: 10px') Select the features you are interested in:
                 .large-3.columns
                   label(for='playground') Playgrounds
                   input(type='checkbox', name='playground')
@@ -34,10 +40,6 @@ block content
                 .large-3.columns
                   label(for='school') Schools
                   input(type='checkbox', name='school')
-                .row
-                  .large-3.columns
-                    label(for="Council") Council:                
-                    select(name="council", required="required")
       section.create
         p.title(data-section-title)
           a Create
