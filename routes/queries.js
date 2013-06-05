@@ -22,16 +22,20 @@ exports.findAll = function(pointArr, callback) {
     types.push(type);
   }
 
+  // Call doFind for everya given type
   var exec = function(item, seqCallback) {
     doFind(pointArr, item, function(results) { // doFind callbacl
       seqCallback(null, results); // async's callback
     });
   }
 
+  // Sequenially call 'exec' above with each of the types from typesToTables
   async.map(types, exec, function(err, asyncResults) {
 
     // console.log('asyncResults: ', asyncResults);
 
+    // async.map puts the individual results into an array, concatenate
+    // all of them into a single result array
     var results = [];
 
     // asyncResults is an array of arrays
