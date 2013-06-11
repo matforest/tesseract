@@ -1,6 +1,6 @@
 # Tessaract
 
-This is project Tesseract - this is going to be EPIC
+This project was written in 48 hours on May 31<sup>st</sup> to June 2<sup>nd</sup> for GovHack 2013/Unleashed Adelaide 2013. It runs on nodejs & postgres+postgis.
 
 ## Setup instructions
 
